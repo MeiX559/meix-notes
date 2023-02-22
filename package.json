@@ -1,0 +1,15 @@
+{
+  "name": "meix-notes",
+  "version": "1.0.0",
+  "description": "前端学习文档",
+  "author": "zmeix",
+  "license": "ISC",
+  "scripts": {
+    "dev": "vitepress dev docs --port=8732",
+    "build": "vitepress build docs"
+  },
+  "devDependencies": {
+    "vitepress": "1.0.0-alpha.47",
+    "vue": "^3.2.47"
+  }
+}
