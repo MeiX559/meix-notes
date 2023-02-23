@@ -15,7 +15,7 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       {
-        text: '前端基础',
+        text: '前端知识',
         link: '/fe/'
       },
       {
@@ -27,8 +27,8 @@ export default defineConfig({
         link: '/pit/'
       },
       {
-        text: 'meixiu',
-        items: [{ text: '个人主页', link: 'https://github.com/MeiX559' }]
+        text: '个人主页',
+        link: 'https://github.com/MeiX559'
       }
     ],
     sidebar,

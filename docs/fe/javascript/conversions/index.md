@@ -275,7 +275,9 @@ console.log(a.toString()) //'1.07e+21'
 - 对象会首先调用 ToPrimitive 转换规则将对象转换为基本类型，如果返回的结果不是字符串类型，再根据以上规则转换为字符串。
 - 数组的默认 toString()方法进行了重新定义，将所有单元字符串化以后再用‘,’连接起来。
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/22938772/1655103199091-a054f687-7b44-4451-b7ab-64a1207b8b06.png#averageHue=%23fefefe&clientId=u3df98694-3e0a-4&errorMessage=unknown%20error&from=paste&height=43&id=mLs1P&name=image.png&originHeight=37&originWidth=189&originalType=binary&ratio=1&rotation=0&showTitle=false&size=6027&status=error&style=none&taskId=ub40537d9-c5d8-4d03-9a7c-784fa7fdbe5&title=&width=220.5)
+```js
+;[1, 2, 3].toString() //('1,2,3')
+```
 
 - JSON 字符串化
   1. JSON 字符串化和 toString 的效果基本相同，只不过序列化的结果总是字符
@@ -582,17 +584,17 @@ c && console.log('真')
 
 - undefined，null，空字符串('')，+0，-0，NaN，false 都判断为 false
 
-# 二、宽松相等和严格相等
+# 宽松相等和严格相等
 
 宽松相等“==”允许在相等比较时进行强制类型转换，而严格相等“===”不允许；
-::: warning
+::: warning 注意点
 NaN == NaN //false
 +0 ==-0 // true
 :::
 
 ## ==操作符强制类型转换规则
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/22938772/1660031868505-69865102-6854-4715-b64c-bd44b61c3dc8.png#averageHue=%23fdfdfa&clientId=uf538b726-f2d0-4&errorMessage=unknown%20error&from=paste&height=363&id=NA4hU&name=image.png&originHeight=726&originWidth=1850&originalType=binary&ratio=1&rotation=0&showTitle=false&size=406109&status=error&style=none&taskId=ua69df60e-3fee-490b-95d0-68ab5819dac&title=&width=925)
+![==操作符强制类型转换规则](./images//conversion_rule.png)
 
 ### 1、比较两者类型是否相同，如果相同的话则直接比较两者的值
 
@@ -603,7 +605,8 @@ NaN == NaN //false
 1. 如果 x 为 null，y 为 undefined，则结果为 true。
 2. 如果 x 为 undefined，y 为 null，则结果为 true。
    在==中，null 和 undefined 是相等的（它们也与其自身相等）；
-   ![image.png](https://cdn.nlark.com/yuque/0/2022/png/22938772/1655186070759-65a275a9-6828-4ba2-ab24-ba6f69c923c6.png#averageHue=%23f1f1f1&clientId=u7d773484-4d59-4&errorMessage=unknown%20error&from=paste&height=224&id=VAW6K&name=image.png&originHeight=448&originWidth=352&originalType=binary&ratio=1&rotation=0&showTitle=false&size=34741&status=error&style=none&taskId=u4bab9ff4-a575-4553-9092-55b13e5e9cf&title=&width=176)
+
+   ![image.png](./images/conversion_code.png)
 
 ### 3、如果不是 null 和 undefined 之间的比较，就会进行类型转换
 
