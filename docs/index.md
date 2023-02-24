@@ -10,9 +10,9 @@ hero:
     alt: meixiu
   actions:
     - text: 前端知识
-      link: /fe/es6/
+      link: /fe/javascript/conversions/index
     - text: 提效工具
-      link: /efficiency/online-tools
+      link: /tools/online-tools
       theme: alt
 features:
   - title: 前端知识

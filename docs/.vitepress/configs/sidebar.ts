@@ -12,12 +12,36 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: '函数', link: '/fe/javascript/fun/index' },
         { text: '作用域', link: '/fe/javascript/scope/index' }
       ]
+    },
+    {
+      text: 'ES6',
+      link: '/fe/es6/index'
+    },
+    {
+      text: 'CSS 知识概览',
+      collapsed: false,
+      items: [
+        { text: 'CSS居中完全指南', link: '/fe/css/middle' },
+        { text: 'mask 属性介绍', link: '/fe/css/mask' },
+        { text: 'width和height作用细节', link: '/fe/css/wh' },
+        { text: 'line-height', link: '/fe/css/line-height' }
+      ]
     }
   ],
   '/pit/': [
     {
       text: '踩坑记录',
       link: '/pit/'
+    }
+  ],
+  '/tools/': [
+    {
+      text: '工具方法',
+      collapsed: false,
+      items: [
+        { text: 'VSCode 配置', link: '/tools/vscode' },
+        { text: '在线工具', link: '/tools/online-tools' }
+      ]
     }
   ]
 }

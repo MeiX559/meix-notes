@@ -113,7 +113,7 @@ String(obj) // 'str'
 无偏好算法取决于被转换对象的类。
 :::
 
-![](https://cdn.nlark.com/yuque/0/2022/jpeg/22938772/1664245893256-8bf1d653-3269-4647-9839-a4b6aef8fe33.jpeg)
+![思维导图](./images/outline.jpg)
 
 #### 对象转换为字符串
 

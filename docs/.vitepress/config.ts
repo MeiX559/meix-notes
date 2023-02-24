@@ -16,11 +16,11 @@ export default defineConfig({
     nav: [
       {
         text: '前端知识',
-        link: '/fe/'
+        link: '/fe/javascript/conversions/index'
       },
       {
         text: '工具方法',
-        link: '/tools/'
+        link: '/tools/vscode'
       },
       {
         text: '踩坑记录',
