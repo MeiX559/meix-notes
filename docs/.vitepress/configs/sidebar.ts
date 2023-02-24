@@ -8,7 +8,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       items: [
         { text: '数据类型', link: '/fe/javascript/types/index' },
         { text: '声明变量', link: '/fe/javascript/variables/index' },
-        // { text: '类型转换', link: '/fe/javascript/conversions/index' },
+        { text: '类型转换', link: '/fe/javascript/conversions/index' },
         { text: '函数', link: '/fe/javascript/fun/index' },
         { text: '作用域', link: '/fe/javascript/scope/index' }
       ]

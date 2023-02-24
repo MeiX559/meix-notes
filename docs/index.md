@@ -10,7 +10,7 @@ hero:
     alt: meixiu
   actions:
     - text: 前端知识
-      link: /fe/javascript/index
+      link: /fe/javascript/conversions/index
     - text: 提效工具
       link: /tools/online-tools
       theme: alt
