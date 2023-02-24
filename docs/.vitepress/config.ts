@@ -36,6 +36,19 @@ export default defineConfig({
     outline: {
       level: 'deep',
       label: '本页目录'
+    },
+    socialLinks: [{ icon: 'github', link: 'https://github.com/MeiX559' }],
+
+    footer: {
+      message: '如有转载或 CV 的请标注本站原文地址',
+      copyright: 'Copyright © 2023 meixiu'
+    },
+    darkModeSwitchLabel: '外观',
+    returnToTopLabel: '返回顶部',
+    lastUpdatedText: '上次更新',
+    docFooter: {
+      prev: '上一篇',
+      next: '下一篇'
     }
   }
 })

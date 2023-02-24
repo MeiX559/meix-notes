@@ -36,12 +36,16 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   ],
   '/tools/': [
     {
-      text: '工具方法',
+      text: '常用工具/方法',
       collapsed: false,
       items: [
         { text: 'VSCode 配置', link: '/tools/vscode' },
         { text: '在线工具', link: '/tools/online-tools' }
       ]
+    },
+    {
+      text: 'Git相关',
+      link: '/tools/git'
     }
   ]
 }
