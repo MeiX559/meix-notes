@@ -1,5 +1,9 @@
 # 类型转换
 
+:::tip 温馨提示
+阅读[《JavaScript 高级程序设计（第 4 版）》](https://www.ituring.com.cn/book/2472)和[《你不知道的 JavaScript（中卷）》](https://www.ituring.com.cn/book/1563)之后的个人总结
+:::
+
 `JavaScript` 对待自己所需值的类型非常灵活，
 ::: tip
 
