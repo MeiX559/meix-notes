@@ -24,7 +24,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'CSS居中完全指南', link: '/fe/css/middle' },
         { text: 'mask 属性介绍', link: '/fe/css/mask' },
         { text: 'width和height作用细节', link: '/fe/css/wh' },
-        { text: 'line-height', link: '/fe/css/line-height' }
+        { text: 'line-height', link: '/fe/css/line-height' },
+        { text: 'CSS 预处理器', link: '/fe/css/preprocessor' }
       ]
     }
   ],
