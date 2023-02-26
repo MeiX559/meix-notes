@@ -28,7 +28,7 @@ export default defineConfig({
       },
       {
         text: '个人主页',
-        link: 'https://github.com/MeiX559'
+        link: '/about/'
       }
     ],
     sidebar,
