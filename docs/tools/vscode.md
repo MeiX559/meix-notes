@@ -1,13 +1,5 @@
 # Visual Studio Code 配置
 
-::: tip 来自 [maomao](https://github.com/maomao1996) 博客
-有这么优秀的总结可用为什么不呢
-
-感兴趣可直接看茂茂博客 ([mm-notes](https://mm-notes.netlify.app/))
-
-或者访问其主页，优质笔记作品等你发现([fe-mm](https://fe-mm.com/))
-:::
-
 ## 扩展插件推荐
 
 ### 主题相关
@@ -556,3 +548,5 @@ https://az764295.vo.msecnd.net/stable/74b1f979648cc44d385a2286793c226e611f59e7/V
 # 替换如下
 https://vscode.cdn.azure.cn/stable/74b1f979648cc44d385a2286793c226e611f59e7/VSCode-darwin-universal.zip
 ```
+
+参考文档：[maomao - VSCode 配置](https://mm-notes.netlify.app/efficiency/software/vscode)
