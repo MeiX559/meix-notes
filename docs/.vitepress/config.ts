@@ -27,6 +27,10 @@ export default defineConfig({
         link: '/pit/'
       },
       {
+        text: '前端书籍',
+        link: '/books/'
+      },
+      {
         text: '个人主页',
         link: '/about/'
       }

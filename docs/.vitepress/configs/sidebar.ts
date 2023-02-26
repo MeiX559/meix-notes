@@ -48,6 +48,14 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     {
       text: 'Git相关',
       link: '/tools/git'
+    },
+    {
+      text: 'JavaScript 常用方法',
+      items: [
+        { text: 'String 方法', link: '/tools/javascript/index' },
+        { text: 'JS 数组方法', link: '/tools/javascript/arr' },
+        { text: 'JS 对象方法', link: '/tools/javascript/obj' }
+      ]
     }
   ]
 }
