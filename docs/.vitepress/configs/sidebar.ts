@@ -22,9 +22,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       collapsed: false,
       items: [
         { text: 'CSS居中完全指南', link: '/fe/css/middle' },
-        { text: 'mask 属性介绍', link: '/fe/css/mask' },
+        { text: 'CSS 文本换行', link: '/fe/css/wrap_text' },
         { text: 'width和height作用细节', link: '/fe/css/wh' },
         { text: 'line-height', link: '/fe/css/line-height' },
+        { text: 'mask 属性介绍', link: '/fe/css/mask' },
         { text: 'CSS 预处理器', link: '/fe/css/preprocessor' }
       ]
     }
