@@ -86,7 +86,7 @@ console.log(m_ArrayOf('foo')) //['foo']
 ### forEach()
 
 `forEach()`方法对数组的每个元素执行一次给定的函数。这个方法即使指定了 return 值，它的返回值也是 undefined。
-**语法**：arr.forEach(callback[currentValue[,index[,array]]](,thisArg))
+**语法**：arr.forEach(callback[currentValue[,index[,array]]] (,thisArg))
 **参数**：**callback**：为数组中每个元素执行的函数，该函数接收一至三个参数：
 **currentValue**：数组中正在处理的**当前元素**
 **index**：数组中正在处理的当前元素的**索引**
@@ -238,7 +238,7 @@ console.log(result2) // 15
 
 some()方法测试数组中是不是至少有一个元素通过了被提供的函数测试，它返回的是一个 Boolean 类型的值。
 
-**语法**：arr.some(callback[element[, index[, array]]](, thisArg))
+**语法**：arr.some(callback[element[, index[, array]]] (, thisArg))
 
 :::tip 参数
 **callback**：用来测试每个元素的函数，它接收三个参数：
@@ -283,7 +283,7 @@ console.log(noElement) // false
 
 every()方法用于测试一个数组内的所有元素是否都能通过指定函数的测试，它返回一个布尔值。
 
-**语法**：arr.every(callback[element[, index[, array]]](, thisArg))
+**语法**：arr.every(callback[element[, index[, array]]] (, thisArg))
 参数与 some 方法类似。
 
 **返回值**：如果回调函数的每一次返回都为 true，则返回 true，否则返回 false。
