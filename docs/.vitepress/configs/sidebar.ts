@@ -51,6 +51,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: 'JavaScript 常用方法',
+      collapsed: false,
       items: [
         { text: 'String 方法', link: '/tools/javascript/index' },
         { text: 'JS 数组方法', link: '/tools/javascript/arr' },
