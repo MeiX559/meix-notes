@@ -17,6 +17,6 @@ hero:
 features:
   - title: 前端知识
     details: 整理前端所需要的知识点 <br /> 如有异议按你的理解为主，不接受反驳
-  - title: 奇淫技巧
-    details: 记录各种各样的奇淫技巧 <br /> 配合 CV 大法来解决各种疑难杂症
+  - title: 工具方法
+    details: 整理前端的各种工具方法 <br /> 一键 CV 解决开发的各种疑难杂症
 ---

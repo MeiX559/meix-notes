@@ -7,10 +7,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       collapsed: false,
       items: [
         { text: '数据类型', link: '/fe/javascript/types/index' },
-        { text: '声明变量', link: '/fe/javascript/variables/index' },
-        { text: '类型转换', link: '/fe/javascript/conversions/index' },
-        { text: '函数', link: '/fe/javascript/fun/index' },
-        { text: '作用域', link: '/fe/javascript/scope/index' }
+        // { text: '声明变量', link: '/fe/javascript/variables/index' },
+        { text: '类型转换', link: '/fe/javascript/conversions/index' }
+        // { text: '函数', link: '/fe/javascript/fun/index' },
+        // { text: '作用域', link: '/fe/javascript/scope/index' }
       ]
     },
     {
@@ -55,7 +55,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       items: [
         { text: 'String 方法', link: '/tools/javascript/index' },
         { text: 'JS 数组方法', link: '/tools/javascript/arr' },
-        { text: 'JS 对象方法', link: '/tools/javascript/obj' }
+        { text: 'JS 对象方法', link: '/tools/javascript/obj' },
+        { text: '时间日期相关', link: '/tools/javascript/date' }
       ]
     }
   ]
