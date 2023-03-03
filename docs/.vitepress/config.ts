@@ -26,10 +26,10 @@ export default defineConfig({
       //   text: '踩坑记录',
       //   link: '/pit/'
       // },
-      // {
-      //   text: '日常记录',
-      //   link: '/daily/screenshot'
-      // },
+      {
+        text: '日常记录',
+        link: '/daily/screenshot'
+      },
       {
         text: '前端书籍',
         link: '/books/'

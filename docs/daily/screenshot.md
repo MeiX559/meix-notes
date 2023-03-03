@@ -212,11 +212,12 @@ html2canvas(element, options)
 
 :::warning 跨域图片使用 CDN 资源时的注意事项
 
-1. 验证图片资源是否支持 CORS 跨域，通过 Chrome 开发者工具可以看到图片请求响应头中应含有 Access-Control-Allow-Origin 的字段，即坊间常提到的跨域头。
+验证图片资源是否支持 CORS 跨域，通过 Chrome 开发者工具可以看到图片请求响应头中应含有 Access-Control-Allow-Origin 的字段，即坊间常提到的跨域头。
 
-2. 不同的 CDN 服务商配置资源跨域头的方式不同，具体应咨询 CDN 服务商。
-3. 特殊情况下，部分 CDN 提供方可能会存在图片缓存不含 CORS 跨域头的情况。为保证快照显示正常，建议优先联系 CDN 寻求技术支持，不推荐通过图片链接后缀时间戳等方式强制回源，避免影响源站性能和 CDN 计费。
-   :::
+不同的 CDN 服务商配置资源跨域头的方式不同，具体应咨询 CDN 服务商。
+
+特殊情况下，部分 CDN 提供方可能会存在图片缓存不含 CORS 跨域头的情况。为保证快照显示正常，建议优先联系 CDN 寻求技术支持，不推荐通过图片链接后缀时间戳等方式强制回源，避免影响源站性能和 CDN 计费。
+:::
 
 - 服务端转发
 
@@ -233,7 +234,7 @@ html2canvas(element, options)
 解决方案：
 在调用`html2canvas`之前，先记录此时的 scrollTop，然后调用 window.scroll(0, 0)将页面移动至顶部。待快照生成后，再调用 window.scroll(0, scrollTop)恢复原有纵向偏移量。
 
-```html
+```js
 <div className="page-home" id="page-home">
   <div id="home-box">
     <img src="/img2.jpeg" />
@@ -260,7 +261,7 @@ const generaterCanvas = (target: HTMLElement) => {
     backgroundColor: 'black', //画布背景色
     width: imgWidth,
     height: imgHeight,
-    scale: 2, // 处理模糊问题
+    scale: window.devicePixelRatio, // 处理模糊问题
     dpi: 300 // 处理模糊问题
   }
   // 针对滚动元素是 body 先作置顶
@@ -303,8 +304,81 @@ const handleGeneraterImg = () => {
 
 ### dom-to-image
 
-`dom-to-image`库主要使用的是 SVG 实现方式，简单来说就是先把 DOM 转换为 SVG 然后再把 SVG 转换为图片。
+[dom-to-image](https://github.com/tsayen/dom-to-image) 主要使用的是 SVG 实现方式，简单来说就是先把 DOM 转换为 SVG 然后再把 SVG 转换为图片。
 
+#### SVG 转换
+
+SVG 中有一个[foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，它允许包含来自不同的 XML 命名空间的元素（即 xhtml/html），支持内嵌 HTML 和 css 样式。利用这个特性，只需要将节点样式转换为内联后，用`foreignObject`包裹即可。
+
+#### 主要方法
+
+- `domtoimage.toPng(…)`：将节点转化为 png 格式的图片
+- `domtoimage.toJpeg(…)`：将节点转化为 jpg 格式的图片
+- `domtoimage.toSvg(…)`：将节点转化为 svg 格式的图片，生成的图片的格式都是 base64 格式
+- `domtoimage.toBlob(…)`：将节点转化为二进制格式，这个可以直接将图片下载
+- `domtoimage.toPixelData(…)`：获取原始像素值，以 Uint8Array 数组的形式返回，每 4 个数组元素表示一个像素点，即 rgba 值。这个方法也是挺实用的，可以用于 WebGL 中编写着色器颜色。
+
+#### 主要属性
+
+- filter ： 过滤器节点中默写不需要的节点；
+- bgcolor ： 图片背景颜色；
+- height, width ： 图片宽高；
+- style ：传入节点的样式，可以是任何有效的样式；
+- quality ： 图片的质量，也就是清晰度；一个介于 0 和 1 之间的数字，表示 JPEG 图像的图像质量（例如 0.92 => 92%）。默认为 1.0 (100%)
+- cacheBust ： 将时间戳加入到图片的 url 中，相当于添加新的图片；
+- imagePlaceholder ： 图片生成失败时，在图片上面的提示，相当于 img 标签的 alt；
+
+#### 使用
+
+```html
+<div id="home-box" className="home-box">
+  <img className="img2" src="/img2.jpeg" />
+  <button onClick="{handleToImage}">Dom to Image</button>
+  <button onClick="{handleSaveImg}">保存图片</button>
+</div>
+<img src="{imgUrl}" alt="" />
 ```
 
+```js
+const [imgUrl, setImgUrl] = useState()
+
+/**
+ *
+ * @param target DOM
+ * @param type 转换的图片格式，主要有 toPng，toJpeg，toSvg，toBlob，toPixelData
+ * @param options 属性
+ */
+const convertToImg = (target: HTMLElement, type: string, options: {}) => {
+  domtoimage[type](target)
+    .then((dataUrl: SetStateAction<undefined>) => {
+      setImgUrl(dataUrl)
+    })
+    .catch((err: any) => {
+      console.log('转换失败', err)
+    })
+}
+
+const handleToImage = () => {
+  const target = document.getElementById('home-box')
+  const options = { bgcolor: 'blue', width: 100, height: 100, imagePlaceholder: '图片' }
+  convertToImg(target, 'toSvg', options)
+}
+
+// 保存图片
+const handleSaveImg = () => {
+  let link = document.createElement('a')
+  link.download = 'my-image-name.png'
+  link.href = imgUrl
+  imgUrl && link.click()
+}
 ```
+
+#### 浏览器支持情况
+
+支持 Chrome 和 Firefox，Chrome 在大型 DOM 树上的性能明显更好，这可能是因为它对 SVG 的支持更高效，而且它支持属性`CSSStyleDeclaration.cssText`
+
+不支持（也不会）支持 Internet Explorer，因为它不支持 SVG`foreignObject`标签
+
+不支持 Safari ，因为它在 `foreignObject`标签上使用了更严格的安全模型。toSvg 建议的解决方法是在服务器上使用和呈现。
+
+#### 源码解析
