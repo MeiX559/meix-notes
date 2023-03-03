@@ -36,6 +36,13 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       link: '/pit/'
     }
   ],
+  '/daily/': [
+    {
+      text: '日常记录',
+      collapsed: false,
+      items: [{ text: '', link: '/daily/screenshot' }]
+    }
+  ],
   '/tools/': [
     {
       text: '常用工具/方法',

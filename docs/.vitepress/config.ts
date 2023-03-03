@@ -22,10 +22,14 @@ export default defineConfig({
         text: '工具方法',
         link: '/tools/vscode'
       },
-      {
-        text: '踩坑记录',
-        link: '/pit/'
-      },
+      // {
+      //   text: '踩坑记录',
+      //   link: '/pit/'
+      // },
+      // {
+      //   text: '日常记录',
+      //   link: '/daily/screenshot'
+      // },
       {
         text: '前端书籍',
         link: '/books/'
