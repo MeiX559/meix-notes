@@ -25,12 +25,14 @@
 
 具体来说，转换过程是将目标 DOM 节点绘制到 canvas 画布，然后 canvas 画布以图片形式导出。可简单标记为绘制阶段和导出阶段两个步骤：
 
-- **绘制阶段**：选择希望绘制的 DOM 节点，根据 nodeType 调用 canvas 对象的对应 API，将目标 DOM 节点绘制到 canvas 画布（例如对于<img>的绘制使用 drawImage 方法)。
+- **绘制阶段**：选择希望绘制的 DOM 节点，根据 nodeType 调用 canvas 对象的对应 API，将目标 DOM 节点绘制到 canvas 画布（例如对于 img 的绘制使用 drawImage 方法)。
 - **导出阶段**：通过 canvas 的 toDataURL 或 getImageData 等对外接口，最终实现画布内容的导出
 
 ## 基础方案
 
 ### 原生 canvas
+
+对于单个 img 元素可按如下方式生成自身的快照：
 
 ```html
 <img id="box" src="/vite.svg" className="logo" alt="Vite logo" />
@@ -50,7 +52,6 @@ const exportNewImage = (canvas) => {
   exportImage.src = canvas.toDataURL()
   document.body.appendChild(exportImage)
 }
-exportNewImage(canvas)
 // 绘制阶段：待图片内容加载完毕后绘制画布
 target.onload = () => {
   // 将图片内容绘入画布
@@ -65,7 +66,7 @@ target.onload = () => {
 从上面 canvas 方案中可以看到基于 canvas 提供的相关基础 API，为前端侧的页面快照处理提供了可能。
 然而，具体的业务应用往往更加复杂，上面的「低配版」实例显然未能覆盖多数的实际场景，例如：
 
-- canvas 的 drawImage 方法只接受 CanvasImageSource，而 CanvasImageSource 并不包括文本节点、普通的 div 等，将非<img>的元素绘制到 canvas 需要特定处理。
+- canvas 的 drawImage 方法只接受 CanvasImageSource，而 CanvasImageSource 并不包括文本节点、普通的 div 等，将非 img 的元素绘制到 canvas 需要特定处理。
 - 当有多个 DOM 元素需要绘制时，层级优先级处理较为复杂。
 - 调用 canvas 绘制：需要进行布局计算，需要关注 float、z-index、position 等布局定位的处理。
 - 样式合成绘制计算较为繁琐。绘制起来也很繁琐，造成开发量大。
@@ -76,11 +77,36 @@ target.onload = () => {
 
 [html2canvas 文档](http://html2canvas.hertzen.com/)
 
-`html2canvas`库主要使用的是 Canvas 实现方式，主要过程是手动将 dom 重新绘制成 canvas，因此，它只能正确渲染可以理解的属性，有许多 CSS 属性无法正确渲染。
+`html2canvas`库主要使用的是 Canvas 实现方式，主要过程是手动将 dom 重新绘制成 canvas，并没有截取页面的屏幕截图，而是根据从 DOM 读取的属性构建页面的表示，因此，它只能正确渲染可以理解的属性，有许多 CSS 属性无法正确渲染。
 
 #### 使用
 
 `html2canvas`对外暴露了一个可执行函数，它的第一个参数用于接收待绘制的目标节点(必选)；第二个参数是可选的配置项，用于设置涉及 canvas 导出的各个参数:
+
+options 对象可选的值
+
+| Name                   | Default                 | Description                                                                          |
+| ---------------------- | ----------------------- | ------------------------------------------------------------------------------------ |
+| allowTaint             | false                   | 是否允许跨域图像污染画布                                                             |
+| backgroundColor        | #ffffff                 | 画布背景颜色，如果在 DOM 中没有指定，设置“null”（透明）                              |
+| canvas                 | null                    | 使用现有的“画布”元素，用来作为绘图的基础                                             |
+| foreignObjectRendering | false                   | 是否使用 ForeignObject 渲染（如果浏览器支持的话）                                    |
+| imageTimeout           | 15000                   | 加载图像的超时时间(毫秒)，设置为“0”以禁用超时                                        |
+| ignoreElements         | (element) => false      | 从呈现中移除匹配元素                                                                 |
+| logging                | true                    | 为调试目的启用日志记录                                                               |
+| onclone                | null                    | 回调函数，当文档被克隆以呈现时调用，可以用来修改将要呈现的内容，而不影响原始源文档。 |
+| proxy                  | null                    | 用来加载跨域图片的代理 URL，如果设置为空（默认），跨域图片将不会被加载               |
+| removeContainer        | true                    | 是否清除 html2canvas 临时创建的克隆 DOM 元素                                         |
+| scale                  | window.devicePixelRatio | 用于渲染的缩放比例，默认为浏览器设备像素比                                           |
+| useCORS                | false                   | 是否尝试使用 CORS 从服务器加载图像                                                   |
+| width                  | Element width           | canvas 的宽度                                                                        |
+| height                 | Element height          | canvas 的高度                                                                        |
+| x                      | Element x-offset        | canvas 的 x 轴位置                                                                   |
+| y                      | Element y-offset        | canvas 的 y 轴位置                                                                   |
+| scrollX                | Element scrollX         | 渲染元素时使用的 x 轴位置(例如，如果元素使用 position: fixed)                        |
+| scrollY                | Element scrollY         | 渲染元素时使用的 y 轴位置(例如，如果元素使用 position: fixed)                        |
+| windowWidth            | Window.innerWidth       | 渲染元素时使用的窗口宽度，这可能会影响诸如媒体查询之类的事情                         |
+| windowHeight           | Window.innerHeight      | 渲染元素时使用的窗口高度，这可能会影响诸如媒体查询之类的事情                         |
 
 ```js
 // element 为目标绘制节点，options为可选参数
@@ -99,6 +125,26 @@ html2canvas(dom, options).then(function (canvas) {
   document.body.appendChild(canvas)
 })
 ```
+
+#### 浏览器支持情况
+
+#### 原理分析
+
+html2canvas 的基本原理是读取 DOM 元素的信息，基于这些信息去构建截图，并呈现在 canvas 画布中。其中重点就在于将 dom 重新绘制成 canvas 的过程，该过程整体的思路是：
+
+遍历目标节点和目标节点的子节点，遍历过程中记录所有节点的结构、内容和样式，然后计算节点本身的层级关系，最后根据不同的优先级绘制到 canvas 画布中。
+
+主要文件解析：
+
+html2canvas 的解析过程：
+
+1. 构建配置项
+
+2. clone 目标节点并获取样式和内容
+
+3. 解析目标节点
+4. 构建内部渲染器
+5. 绘制数据
 
 ### canvas2image
 
@@ -177,10 +223,6 @@ const handleToImage = () => {
 - 明明原页面清晰可辨，为什么生成的图片模糊如毛玻璃？
 - 将页面转换为图片的过程十分缓慢，影响后续相关操作，有什么好办法么？
 
-下面从内容完整性、清晰度优化和转换效率，进一步探究高质量的快照解决方案。
-
-#### 内容完整性
-
 首要问题：保证目标节点视图信息完整导出
 
 由于真机环境的兼容性和业务实现方式的不同，在一些使用 html2canvas 过程中常会出现快照内容与原视图不一致的情况。内容不完整的常见自检 checklist 如下：
@@ -189,11 +231,11 @@ const handleToImage = () => {
 - 资源加载：生成快照时，相关资源还未加载完毕。
 - 滚动问题：页面中滚动元素存在偏移量，导致生成的快照顶部出现空白。
 
+#### 跨域问题解决方案
+
 :::tip 跨域问题
 由于 `canvas` 对于图片资源的同源限制，如果画布中包含跨域的图片资源则会污染画布( Tainted canvases )，造成生成图片内容混乱或者`html2canvas`方法不执行等异常问题。
 :::
-
-解决方案：
 
 - useCORS 配置
 
@@ -208,7 +250,7 @@ html2canvas(element, options)
 ```
 
 - CORS 配置
-  上一步的 useCORS 的配置，只是允许<img>接收跨域的图片资源，而对于解锁跨域图片在 canvas 上的绘制并导出，需要图片资源本身需要提供 CORS 支持。
+  上一步的 useCORS 的配置，只是允许 img 接收跨域的图片资源，而对于解锁跨域图片在 canvas 上的绘制并导出，需要图片资源本身需要提供 CORS 支持。
 
 :::warning 跨域图片使用 CDN 资源时的注意事项
 
@@ -221,9 +263,16 @@ html2canvas(element, options)
 
 - 服务端转发
 
+#### 资源加载解决方案
+
 :::tip 资源加载
 资源加载不全，是造成快照不完整的一个常见因素。在生成快照时，如果部分资源没有加载完毕，那么生成的内容自然也谈不上完整。
 :::
+
+1. 设置一定的延迟
+2. 基于 Promise.all 实现
+
+#### 滚动问题解决方案
 
 :::tip 滚动问题
 典型特征：生成快照的顶部存在空白区域。
@@ -231,7 +280,6 @@ html2canvas(element, options)
 原因：一般是保存长图（超过一屏），并且滚动条不在顶部时导致（常见于 SPA 类应用）。
 :::
 
-解决方案：
 在调用`html2canvas`之前，先记录此时的 scrollTop，然后调用 window.scroll(0, 0)将页面移动至顶部。待快照生成后，再调用 window.scroll(0, scrollTop)恢复原有纵向偏移量。
 
 ```js
@@ -291,24 +339,25 @@ const handleGeneraterImg = () => {
 }
 ```
 
-#### 清晰度优化
-
-最终生成快照的清晰度，源头上取决于第一步中 DOM 转换成的 canvas 的清晰度。
-
-以下介绍 5 种行之有效的清晰度优化方法。
-
-- 使用 px 单位
-  为了给到`html2canvas`明确的整数计算值，避免因小数舍入而导致的拉伸模糊，建议将布局中使用中使用%、vw、vh 或 rem 等单位的元素样式，统一改为使用 px。
-
-#### 转换效率
-
 ### dom-to-image
 
 [dom-to-image](https://github.com/tsayen/dom-to-image) 主要使用的是 SVG 实现方式，简单来说就是先把 DOM 转换为 SVG 然后再把 SVG 转换为图片。
 
 #### SVG 转换
 
-SVG 中有一个[foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，它允许包含来自不同的 XML 命名空间的元素（即 xhtml/html），支持内嵌 HTML 和 css 样式。利用这个特性，只需要将节点样式转换为内联后，用`foreignObject`包裹即可。
+SVG 中有一个[foreignObject](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Element/foreignObject)，这个元素的作用是可以在其中使用具有其它 XML 命名空间的 XML 元素，支持内嵌 HTML 和 css 样式。利用这个特性，只需要将节点样式转换为内联后，用`foreignObject`包裹即可。举个例子：
+
+```js
+<svg xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="120" height="50">
+    <body xmlns="http://www.w3.org/1999/xhtml">
+      <p>文字。</p>
+    </body>
+  </foreignObject>
+</svg>
+```
+
+可以看到`foreignObject`标签里面有一个设置了 xmlns=“<http://www.w3.org/1999/xhtml>”命名空间的 body 标签，此时 body 标签及其子标签都会按照 XHTML 标准渲染，实现了 SVG 和 XHTML 的混合使用。
 
 #### 主要方法
 
@@ -382,3 +431,163 @@ const handleSaveImg = () => {
 不支持 Safari ，因为它在 `foreignObject`标签上使用了更严格的安全模型。toSvg 建议的解决方法是在服务器上使用和呈现。
 
 #### 源码解析
+
+核心 API
+
+- toSvg
+- toPng
+- toJpeg
+- toBlob
+- toPixelData
+
+上述这几个方法实现方式都差不多，主要实现方式：
+
+1. 递归 clone,处理 dom 节点
+2. 将 dom 节点转化为 svg（主要使用 foreignObject 将 dom 包裹，再在 svg 内部嵌入 XHTML）
+3. 转换为 svg 后处理为 dataUrl
+4. 最后处理为 canvas
+
+以下通过 toPng 展开说明，其他方法的实现与 toPng 类似：
+
+1. toPng(调用 draw，实现 canvas=>png)
+
+```js
+function toPng(node, options) {
+  return draw(node, options || {}).then(function (canvas) {
+    return canvas.toDataURL()
+  })
+}
+```
+
+toPng 是通过 draw 方法将 dom 节点转为 canvas，然后通过 canvas 获取图片资源。
+
+2. draw(调用 toSvg，实现 dom=>canvas)
+
+```js
+function draw(domNode, options) {
+  // 将DOM节点转换为svg
+  return (
+    toSvg(domNode, options)
+      // 拿到的svg是image data URL,这里进一步通过svg创建图片
+      .then(util.makeImage)
+      .then(util.delay(100))
+      .then(function (image) {
+        // 通过图片创建canvas并返回
+        var canvas = newCanvas(domNode)
+        canvas.getContext('2d').drawImage(image, 0, 0)
+        return canvas
+      })
+  )
+  // 新建canvas节点，处理dataUrl资源，和options参数
+  function newCanvas(domNode) {
+    var canvas = document.createElement('canvas')
+    canvas.width = options.width || util.width(domNode)
+    canvas.height = options.height || util.height(domNode)
+
+    if (options.bgcolor) {
+      var ctx = canvas.getContext('2d')
+      ctx.fillStyle = options.bgcolor
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
+    return canvas
+  }
+}
+```
+
+draw 方法调用 toSvg 方法拿到 dataUrl 后，将其转换为 canvas 并返回。
+
+3. toSvg(调用 cloneNode 和 makeSvgDataUri，实现 dom=>svg)
+
+```js
+function toSvg(node, options) {
+  options = options || {}
+  copyOptions(options)
+  return (
+    Promise.resolve(node)
+      .then(function (node) {
+        return cloneNode(node, options.filter, true) // 递归克隆dom节点
+      })
+      // 嵌入字体,找出所有font-face样式,添加入一个新的style里面
+      .then(embedFonts)
+      // 将图片链接转换为dataUrl形式使用
+      .then(inlineImages)
+      // 将options里面的一些style放进style里面
+      .then(applyOptions)
+      .then(function (clone) {
+        // 创建svg，将dom节点通过 XMLSerializer().serializeToString() 序列化为字符串
+        // 然后用 foreignObject 包裹，就能将dom转为svg。
+        return makeSvgDataUri(
+          clone,
+          options.width || util.width(node),
+          options.height || util.height(node)
+        )
+      })
+  )
+  function applyOptions(clone) {
+    // 处理一些options的样式
+    ...
+    return clone
+  }
+}
+```
+
+toSvg 方法主要是将 dom 转换为 svg,并将 svg 处理为 dataUrl。
+
+4. cloneNode(克隆处理 dom 和 css)
+
+```js
+function cloneNode(node, filter, root) {
+  if (!root && filter && !filter(node)) return Promise.resolve()
+
+  return (
+    Promise.resolve(node)
+      // 克隆第一层
+      .then(makeNodeCopy)
+      .then(function (clone) {
+        // 克隆子节点
+        return cloneChildren(node, clone, filter)
+      })
+      .then(function (clone) {
+        // 处理节点样式，伪类样式，输入内容以及处理svg，创建命名空间
+        return processClone(node, clone)
+      })
+  )
+}
+```
+
+5. makeSvgDataUri(实现 dom=>svg data:url)
+
+```js
+function makeSvgDataUri(node, width, height) {
+  return (
+    Promise.resolve(node)
+      .then(function (node) {
+        node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml')
+        // 将dom节点通过 XMLSerializer().serializeToString() 序列化为字符串
+        return new XMLSerializer().serializeToString(node)
+      })
+      .then(util.escapeXhtml)
+      .then(function (xhtml) {
+        return '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>'
+      })
+      // 将foreignObject包裹后的dom转换为svg ,不指定xmlns命名空间是不会渲染的
+      .then(function (foreignObject) {
+        return (
+          '<svg xmlns="http://www.w3.org/2000/svg" width="' +
+          width +
+          '" height="' +
+          height +
+          '">' +
+          foreignObject +
+          '</svg>'
+        )
+      })
+      .then(function (svg) {
+        // 将svg处理为dataUrl
+        return 'data:image/svg+xml;charset=utf-8,' + svg
+      })
+  )
+}
+```
+
+用 foreignObject 包裹将 dom 转换为 svg
