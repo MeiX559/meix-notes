@@ -208,15 +208,17 @@ class ElementContainer {
 5. 绘制数据
    调用`renderStackContent`方法，将 DOM 元素一层一层渲染到 canvas 中。
 
+`html2canvas`转换为图片使用了两种方式，一种是将 DOM 转换为 canvas 再转换为图片，另一种是通过设置配置项 foreignObjectRendering 为 true（如果浏览器支持的话），将 DOM 转换为 svg 再转换为图片.
+
 #### 源码分析
 
 入口方法：
 
 ```js
-var html2canvas = function (element, options) {
-  if (options === void 0) {
-    options = {}
-  }
+const html2canvas = (
+  element: HTMLElement,
+  options: Partial<Options> = {}
+): Promise<HTMLCanvasElement> => {
   return renderElement(element, options)
 }
 ```
@@ -239,9 +241,16 @@ const renderElement = async (
   opts: Partial<Options>
 ): Promise<HTMLCanvasElement> => {
   const renderOptions = { ...defaultOptions, ...opts } // 合并默认配置和用户配置
-  const renderer = new CanvasRenderer(renderOptions) // 根据渲染的配置数据生成canvasRenderer实例
-  const root = parseTree(clonedElement) // 解析用户传入的DOM元素（为了不影响原始的DOM，实际上会克隆一个新的DOM元素），获取节点信息
-  return await renderer.render(root) // canvasRenderer实例会根据解析到的节点信息，依据浏览器渲染层叠内容的规则，将DOM元素内容渲染到离屏canvas中
+  if (foreignObjectRendering) {
+    // foreignObject渲染
+    const renderer = new ForeignObjectRenderer(context, renderOptions)
+    return await renderer.render(clonedElement)
+  } else {
+    // canvas渲染
+    const renderer = new CanvasRenderer(renderOptions) // 根据渲染的配置数据生成canvasRenderer实例
+    const root = parseTree(clonedElement) // 解析用户传入的DOM元素（为了不影响原始的DOM，实际上会克隆一个新的DOM元素），获取节点信息
+    return await renderer.render(root) // canvasRenderer实例会根据解析到的节点信息，依据浏览器渲染层叠内容的规则，将DOM元素内容渲染到canvas中
+  }
 }
 ```
 
@@ -250,7 +259,6 @@ const renderElement = async (
 parseTree 的入参是一个普通的 DOM 元素，返回值是一个 `ElementContainer` 对象，该对象主要包含：
 
 - bounds：位置信息（width|height|left|top）
-- context
 - textNodes：文本节点
 - elements：子元素信息
 - flags：用来决定如何渲染的标志
@@ -327,6 +335,25 @@ async renderStackContent(stack: StackingContext) {
     }
 }
 
+```
+
+**`foreignObject`** 渲染就是根据渲染的配置数据生成 `ForeignObjectRenderer` 实例，然后调用实例的 render 方法，返回 canvas.
+
+```js
+async render(element: HTMLElement): Promise<HTMLCanvasElement> {
+    // 将node节点通过foreignObject包裹转换为svg
+    const svg = createForeignObjectSVG(
+        this.options.width * this.options.scale,
+        this.options.height * this.options.scale,
+        this.options.scale,
+        this.options.scale,
+        element
+    );
+    // 将node节点通过 XMLSerializer().serializeToString() 序列化为字符串
+    const img = await loadSerializedSVG(svg);
+    this.ctx.drawImage(img, -this.options.x * this.options.scale, -this.options.y * this.options.scale);
+    return this.canvas;
+}
 ```
 
 ### canvas2image
