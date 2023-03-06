@@ -40,7 +40,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     {
       text: '日常记录',
       collapsed: false,
-      items: [{ text: '', link: '/daily/screenshot' }]
+      items: [{ text: '前端页面截图解决方案', link: '/daily/screenshot' }]
     }
   ],
   '/tools/': [
