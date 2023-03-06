@@ -128,23 +128,206 @@ html2canvas(dom, options).then(function (canvas) {
 
 #### 浏览器支持情况
 
+:::tip
+
+- Firefox 3.5+
+- Google Chrome
+- Opera 12+
+- IE9+
+- Safari 6+
+  :::
+
 #### 原理分析
 
-html2canvas 的基本原理是读取 DOM 元素的信息，基于这些信息去构建截图，并呈现在 canvas 画布中。其中重点就在于将 dom 重新绘制成 canvas 的过程，该过程整体的思路是：
+`html2canvas` 的基本原理是读取 DOM 元素的信息，基于这些信息去构建截图，并呈现在 canvas 画布中。其中重点就在于将 dom 重新绘制成 canvas 的过程，该过程整体的思路是：
 
 遍历目标节点和目标节点的子节点，遍历过程中记录所有节点的结构、内容和样式，然后计算节点本身的层级关系，最后根据不同的优先级绘制到 canvas 画布中。
 
-主要文件解析：
-
-html2canvas 的解析过程：
+`html2canvas` 的解析过程：
 
 1. 构建配置项
+   在这一步会结合传入的 options 和一些 defaultOptions，生成用于渲染的配置数据 renderOptions。相关配置的分类如下：
+
+   ```js
+   resourceOptions：资源跨域相关配置
+   contextOptions：缓存、日志相关配置
+   windowOptions：窗口宽高、滚动配置
+   cloneOptions：对指定dom的配置
+   renderOptions：render结果的相关配置，包括生成图片的各种属性
+   ```
 
 2. clone 目标节点并获取样式和内容
 
 3. 解析目标节点
+   目标节点的样式和内容都获取到了之后，就需要把它所承载的数据信息转化为 Canvas 可以使用的数据类型。在对目标节点的解析方法中，递归整个 DOM 树，并取得每一层节点的数据，对于每一个节点而言需要绘制的部分包括边框、背景、阴影、内容，而对于内容就包含图片、文字、视频等。在整个解析过程中，对目标节点的所有属性进行解析构造，转化成为指定的数据格式，基础数据格式可见以下代码:
+
+```js
+class ElementContainer {
+  // 所有节点上的样式经过转换计算之后的信息
+  readonly styles: CSSParsedDeclaration;
+  // 节点的文本节点信息, 包括文本内容和其他属性
+  readonly textNodes: TextContainer[] = [];
+  // 当前节点的子节点
+  readonly elements: ElementContainer[] = [];
+  // 当前节点的位置信息（宽/高、横/纵坐标）
+  bounds: Bounds;
+  flags = 0;
+  ...
+}
+```
+
 4. 构建内部渲染器
+   把目标节点处理成特定的数据结构之后，就需要结合 Canvas 调用渲染方法了，Canvas 绘图需要根据样式计算哪些元素应该绘制在上层，哪些在下层，那么这个规则是什么样的呢？这里就涉及到 CSS 布局相关的一些知识。默认情况下，CSS 是流式布局的，元素与元素之间不会重叠。不过有些情况下，这种流式布局会被打破，比如使用了浮动(float)和定位(position)。因此需要识别出哪些脱离了正常文档流的元素，并记住它们的层叠信息，以便正确地渲染它们。那些脱离正常文档流的元素会形成一个层叠上下文。
+
+   层叠上下文和层叠顺序的规则：
+   ![层叠顺序图](./images/stackingLevel.png)
+
+   Canvas 绘制节点的时候，需要生成指定的层叠数据，因此需要先计算出整个目标节点里子节点渲染时所展现的不同层级，构造出所有节点对应的层叠上下文在内部所表现出来的数据结构，具体数据结构如下:
+
+   ```js
+   // 当前元素
+   element: ElementPaint
+   // z-index 为负, 形成层叠上下文
+   negativeZIndex: StackingContext[];
+   // z-index 为 0、auto、transform 或 opacity, 形成层叠上下文
+   zeroOrAutoZIndexOrTransformedOrOpacity: StackingContext[];
+   // 定位和 z-index 形成的层叠上下文
+   positiveZIndex: StackingContext[];
+   // 没有定位和 float 形成的层叠上下文
+   nonPositionedFloats: StackingContext[];
+   // 没有定位和内联形成的层叠上下文
+   nonPositionedInlineLevel: StackingContext[];
+   // 内联节点
+   inlineLevel: ElementPaint[];
+   // 不是内联的节点
+   nonInlineLevel: ElementPaint[];
+   ```
+
+   基于以上数据结构，将元素子节点分类，添加到指定的数组中，解析层叠信息的方式和解析节点信息的方式类似，都是递归整棵树，收集树的每一层的信息，形成一颗包含层叠信息的层叠树。
+
 5. 绘制数据
+   调用`renderStackContent`方法，将 DOM 元素一层一层渲染到 canvas 中。
+
+#### 源码分析
+
+入口方法：
+
+```js
+var html2canvas = function (element, options) {
+  if (options === void 0) {
+    options = {}
+  }
+  return renderElement(element, options)
+}
+```
+
+入口方法返回的是`renderElement`调用的结果，因此直接看`renderElement`方法。
+
+`renderElement`方法的主要目的是将页面中指定的 DOM 元素渲染到一个 canvas 中，并将渲染好的 canvas 返回给用户。
+
+`renderElement`方法主要做的事情：
+
+1. 构建配置项，解析用户传入的 options，将其与默认的 options 合并，得到用于渲染的配置数据 renderOptions。
+2. 对传入的 DOM 元素进行解析，取到节点信息和样式信息，这些节点信息会和上一步的 renderOptions 配置一起传给 `canvasRenderer` 实例，用来绘制 canvas
+3. `canvasRenderer` 将依据浏览器渲染层叠内容的规则，将用户传入的 DOM 元素渲染到一个 canvas 中，这个 canvas 我们可以在 then 方法的回调中取到
+
+`renderElement`方法的核心代码如下：
+
+```js
+const renderElement = async (
+  element: HTMLElement,
+  opts: Partial<Options>
+): Promise<HTMLCanvasElement> => {
+  const renderOptions = { ...defaultOptions, ...opts } // 合并默认配置和用户配置
+  const renderer = new CanvasRenderer(renderOptions) // 根据渲染的配置数据生成canvasRenderer实例
+  const root = parseTree(clonedElement) // 解析用户传入的DOM元素（为了不影响原始的DOM，实际上会克隆一个新的DOM元素），获取节点信息
+  return await renderer.render(root) // canvasRenderer实例会根据解析到的节点信息，依据浏览器渲染层叠内容的规则，将DOM元素内容渲染到离屏canvas中
+}
+```
+
+**parseTree 解析节点信息**
+
+parseTree 的入参是一个普通的 DOM 元素，返回值是一个 `ElementContainer` 对象，该对象主要包含：
+
+- bounds：位置信息（width|height|left|top）
+- context
+- textNodes：文本节点
+- elements：子元素信息
+- flags：用来决定如何渲染的标志
+- styles：样式
+
+该对象包含的只是节点树的相关信息，不包含层叠数据，层叠数据在 parseStackingContexts 方法中取得。
+
+**renderer.render**
+
+有了节点信息就可以构建渲染器，渲染的逻辑如下：
+
+- 使用上一步解析到的节点数据，生成层叠数据
+- 使用节点的层叠数据，依据浏览器渲染层叠数据的规则，将 DOM 元素一层一层渲染到离屏 canvas 中
+  render 核心代码如下：
+
+```js
+async render(element: ElementContainer): Promise<HTMLCanvasElement> {
+  const stack = parseStackingContexts(element);
+  // 渲染层叠内容
+  await this.renderStack(stack);
+  return this.canvas;
+}
+```
+
+`parseStackingContexts`解析层叠信息的方式和`parseTree`解析节点信息的方式类似，都是递归整棵树，收集树的每一层的信息，形成一颗包含层叠信息的层叠树。
+
+而渲染层叠内容的`renderStack`方式实际上调用的是`renderStackContent`方法，该方法是整个渲染流程中最为关键的方法。
+
+**renderStackContent**
+
+`renderStackContent`主要做的是将 DOM 元素一层一层得渲染到离屏 canvas 中。默认情况下，CSS 是流式布局的，元素与元素之间不会重叠。不过有些情况下，这种流式布局会被打破，比如使用了浮动(float)和定位(position)，那些脱离正常文档流的元素会形成一个层叠上下文，因此需要根据层叠上下文规则进行渲染，`renderStackContent`就是对 CSS 层叠布局规则的一个实现：
+
+```js
+async renderStackContent(stack: StackingContext) {
+    // 1. 最底层是background/border
+    await this.renderNodeBackgroundAndBorders(stack.element);
+
+    // 2. 第二层是负z-index
+    for (const child of stack.negativeZIndex) {
+        await this.renderStack(child);
+    }
+
+    // 3. 第三层是block块状盒子
+    await this.renderNodeContent(stack.element);
+
+    for (const child of stack.nonInlineLevel) {
+        await this.renderNode(child);
+    }
+
+    // 4. 第四层是float浮动盒子
+    for (const child of stack.nonPositionedFloats) {
+        await this.renderStack(child);
+    }
+
+    // 5. 第五层是inline/inline-block水平盒子
+    for (const child of stack.nonPositionedInlineLevel) {
+        await this.renderStack(child);
+    }
+    for (const child of stack.inlineLevel) {
+        await this.renderNode(child);
+    }
+
+    // 6. 第六层是以下三种：
+    // (1) ‘z-index: auto’或‘z-index: 0’。
+    // (2) ‘transform: none’
+    // (3) opacity小于1
+    for (const child of stack.zeroOrAutoZIndexOrTransformedOrOpacity) {
+        await this.renderStack(child);
+    }
+
+    // 7. 第七层是正z-index
+    for (const child of stack.positiveZIndex) {
+        await this.renderStack(child);
+    }
+}
+
+```
 
 ### canvas2image
 
@@ -221,11 +404,11 @@ const handleToImage = () => {
 
 - 为什么有些内容显示不完整、残缺、白屏或黑屏？
 - 明明原页面清晰可辨，为什么生成的图片模糊如毛玻璃？
-- 将页面转换为图片的过程十分缓慢，影响后续相关操作，有什么好办法么？
+- 将页面转换为图片的过程十分缓慢
 
 首要问题：保证目标节点视图信息完整导出
 
-由于真机环境的兼容性和业务实现方式的不同，在一些使用 html2canvas 过程中常会出现快照内容与原视图不一致的情况。内容不完整的常见自检 checklist 如下：
+由于真机环境的兼容性和业务实现方式的不同，在一些使用 `html2canvas` 过程中常会出现快照内容与原视图不一致的情况。内容不完整的常见自检 checklist 如下：
 
 - 跨域问题：存在跨域图片污染 canvas 画布。
 - 资源加载：生成快照时，相关资源还未加载完毕。
@@ -250,18 +433,7 @@ html2canvas(element, options)
 ```
 
 - CORS 配置
-  上一步的 useCORS 的配置，只是允许 img 接收跨域的图片资源，而对于解锁跨域图片在 canvas 上的绘制并导出，需要图片资源本身需要提供 CORS 支持。
-
-:::warning 跨域图片使用 CDN 资源时的注意事项
-
-验证图片资源是否支持 CORS 跨域，通过 Chrome 开发者工具可以看到图片请求响应头中应含有 Access-Control-Allow-Origin 的字段，即坊间常提到的跨域头。
-
-不同的 CDN 服务商配置资源跨域头的方式不同，具体应咨询 CDN 服务商。
-
-特殊情况下，部分 CDN 提供方可能会存在图片缓存不含 CORS 跨域头的情况。为保证快照显示正常，建议优先联系 CDN 寻求技术支持，不推荐通过图片链接后缀时间戳等方式强制回源，避免影响源站性能和 CDN 计费。
-:::
-
-- 服务端转发
+  上一步的 useCORS 的配置，只是允许 img 接收跨域的图片资源，而对于解锁跨域图片在 canvas 上的绘制并导出，需要图片资源本身提供 CORS 支持，可以在 img 标签上设置 crossorigin，属性值为 anonymous，可以开启 CORS 请求。当然，这种方式的前提还是服务端的响应头 Access-Control-Allow-Origin 已经被设置过允许跨域。如果图片本身服务端不支持跨域，可以使用 canvas 统一转成 base64 格式。
 
 #### 资源加载解决方案
 
@@ -281,63 +453,6 @@ html2canvas(element, options)
 :::
 
 在调用`html2canvas`之前，先记录此时的 scrollTop，然后调用 window.scroll(0, 0)将页面移动至顶部。待快照生成后，再调用 window.scroll(0, scrollTop)恢复原有纵向偏移量。
-
-```js
-<div className="page-home" id="page-home">
-  <div id="home-box">
-    <img src="/img2.jpeg" />
-    <p>---------HTMLTOCANVAS---------</p>
-    <div onClick="{handleGeneraterImg}">生成海报图</div>
-    <div onClick="{handleSaveImg}">保存海报图</div>
-    <img src="/img1.jpeg" />
-  </div>
-</div>
-```
-
-```js
-let scrollTop = 0
-const generaterCanvas = (target: HTMLElement) => {
-  // 实际的滚动元素（按实际修改👇）
-  const scrollElement = document.documentElement
-  // 记录滚动元素纵向偏移量
-  scrollTop = scrollElement.scrollTop
-  let imgHeight = target.offsetHeight // 获取DOM高度
-  let imgWidth = target.offsetWidth // 获取DOM宽度
-  const options = {
-    useCORS: true, // 允许使用跨域图片
-    allowTaint: false, // 不允许跨域图片污染画布
-    backgroundColor: 'black', //画布背景色
-    width: imgWidth,
-    height: imgHeight,
-    scale: window.devicePixelRatio, // 处理模糊问题
-    dpi: 300 // 处理模糊问题
-  }
-  // 针对滚动元素是 body 先作置顶
-  window.scroll(0, 0)
-  return new Promise((resolve, reject) => {
-    html2canvas(target, options).then((canvas) => {
-      resolve(canvas)
-    })
-  })
-}
-
-// 生成海报图
-const handleGeneraterImg = () => {
-  const box = document.getElementById('page-home')
-  const target = document.getElementById('home-box')
-  generaterCanvas(target)
-    .then((canvas) => {
-      const imgUrl = canvas.toDataURL('image/png')
-      const img = new Image()
-      img.src = imgUrl
-      box.appendChild(img)
-    })
-    .finally(() => {
-      // 恢复偏移量
-      window.scroll(0, scrollTop)
-    })
-}
-```
 
 ### dom-to-image
 
@@ -591,3 +706,12 @@ function makeSvgDataUri(node, width, height) {
 ```
 
 用 foreignObject 包裹将 dom 转换为 svg
+
+### html2canvas 和 dom-to-image 优缺点对比
+
+`html2canvas` 优点：较`dom-to-image`兼容性更好，由于`dom-to-image`主要依靠`foreignObject`将 dom 转为 svg，而 IE 不支持`foreignObject`，Safari 在 `foreignObject`标签上使用了更严格的安全模型.
+
+`html2canvas` 缺点：对于一些属性不支持转化：如不支持伪类，border 不支持 dash，不支持 text-shadow 等。
+
+`dom-to-image`优点：元素齐全，还原度高。
+`dom-to-image`缺点：浏览器兼容性不好，建议只在 Chrome 下使用。没有维护更新。
