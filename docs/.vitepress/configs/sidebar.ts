@@ -28,6 +28,15 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'mask 属性介绍', link: '/fe/css/mask' },
         { text: 'CSS 预处理器', link: '/fe/css/preprocessor' }
       ]
+    },
+    {
+      text: '浏览器相关',
+      collapsed: false,
+      items: [
+        // { text: '浏览器工作原理', link: '/fe/browser/workPrinciple' },
+        // { text: '前端缓存指南', link: '/fe/browser/cache' },
+        { text: '浏览器监听切屏功能实现', link: '/fe/browser/visibilitychange' }
+      ]
     }
   ],
   '/pit/': [
