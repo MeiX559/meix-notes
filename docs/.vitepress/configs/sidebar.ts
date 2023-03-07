@@ -68,6 +68,15 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'JS 对象方法', link: '/tools/javascript/obj' },
         { text: '时间日期相关', link: '/tools/javascript/date' }
       ]
+    },
+    {
+      text: 'npm 相关',
+
+      collapsed: false,
+      items: [
+        { text: 'npm 常用命令', link: '/tools/npm/command' }
+        // { text: 'npm scripts', link: '/tools/npm/scripts' }
+      ]
     }
   ]
 }
