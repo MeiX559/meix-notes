@@ -86,6 +86,10 @@ base64 的实现就是通过把字符串转化为二进制数据，然后按照�
 
 base64 转换为字符串:window.atob('')
 
+### base64 编码解码工具
+
+[base64 编码解码工具](https://base64.supfree.net/)
+
 ## ASCII 编码表
 
 | Bin(二进制) | Oct(八进制) | Dec(十进制) | Hex(十六进制) | 缩写/字符    | 解释         |
