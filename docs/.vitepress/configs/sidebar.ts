@@ -53,6 +53,15 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: '前端页面截图解决方案', link: '/daily/screenshot' },
         { text: 'base64格式的数据实现原理', link: '/daily/base64' }
       ]
+    },
+    {
+      text: 'canvas 相关',
+      collapsed: false,
+      items: [{ text: 'canvas 指南', link: '/daily/canvas/canvas' }]
+    },
+    {
+      text: 'SVG',
+      link: '/daily/svg'
     }
   ],
   '/tools/': [
