@@ -421,6 +421,7 @@ C 命令可用来绘制一条三次贝塞尔曲线，相对于二次贝塞尔曲
 ###### A（Elliptical Arc）
 
 A 命令用于画弧形，它可以截取圆或椭圆的弧形成的曲线
+
 **语法**： A rx ry x-axis-rotation large-arc-flag sweep-flag x y 或者 a rx ry x-axis-rotation large-arc-flag sweep-flag x y
 
 **参数**：
@@ -444,3 +445,132 @@ A 命令用于画弧形，它可以截取圆或椭圆的弧形成的曲线
     <path d="M10 400 50 400  A 30 50 0 1 0 150 400 L 200 400" fill="none" style="stroke: #ff0000"/>
   </svg>
 ```
+
+### 填充和轮廓
+
+#### fill
+
+fill 属性用于填充图形的颜色.
+
+**语法**：fill= "color" 或者 style="fill: color"
+
+示例：
+
+```js
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG - fill</title>
+  </head>
+  <body>
+    <svg>
+      <circle cx="80" cy="50" r="50" />
+      <circle cx="200" cy="50" r="50" fill="#ff0000" />
+    </svg>
+  </body>
+</html>
+```
+
+从上面的示例中可以看出，在不设置 fill 属性的时候，其实默认是黑色的填充，这也就是为什么上面的很多例子设置了 fill='none' 其实就是去掉默认填充。
+
+fill 的延伸属性：
+
+##### fill-opacity
+
+fill-opacity 属性用于设置填充颜色的透明度
+
+```js
+<svg>
+  <circle cx="200" cy="50" r="50" fill="#ff0000" fill-opacity="0.5" />
+</svg>
+```
+
+##### fill-rule
+
+`fill-rule`属性用来设置复杂形状的填充规则。它有两种填充方式：nonzero 和 evenodd。该属性简单说就是判断某点属于该形状的“内部”还是“外部”。那么判断的规则是什么呢？
+
+###### nonzero
+
+nonzero 为默认值，规则为：要判断一个点是否在图形内，从该点作任意方向的一条射线，然后检测射线与图形路径的交点情况。从 0 开始计数，路径从左向右（顺时针）穿过射线则计数加 1，从右向左（逆时针）穿过射线则计数减 1。得出计数结果后，如果结果是 0，则认为点在图形外部，否则认为在内部。
+
+###### evenodd
+
+规则为：要判断一个点是否在图形内，从该点作任意方向的一条射线，然后检测射线与图形路径的交点的数量。如果结果是奇数则认为点在内部，是偶数则认为点在外部。
+
+#### stroke
+
+stroke 属性用来定义线条、文本或元素轮廓的颜色。
+
+**语法**：stroke="color" 或者 style="stroke: color"
+
+示例：
+
+```js
+<svg>
+  <circle cx="200" cy="50" r="50" stroke="#ff6666" />
+</svg>
+```
+
+### 文字
+
+SVG 中不仅可以绘制各种图形，还可也以绘制文字。
+
+#### text
+
+通过 text 标签可以在 SVG 中添加文字，
+
+示例：
+
+```js
+<svg width="300" height="300">
+  <text x="50" y="50">
+    Hello Svg !
+  </text>
+</svg>
+```
+
+### 渐变
+
+了解渐变的小伙伴都知道，渐变就是从一个颜色过渡到另一个颜色，且渐变都分为两种渐变：线性渐变和径向渐变
+在 SVG 中渐变依旧如此。
+
+::: warning 注意点
+
+- defs 标签用来定义渐变
+- stop 标签用来定义渐变的颜色坡度，具有三个属性：offset 定义渐变开始和结束的位置、stop-color（定义颜色）和 stop-opacity（定义透明度）
+  :::
+
+#### 线性渐变
+
+**语法**：
+
+```js
+<linearGradient x1="" y1="" x2="" y2="">
+  <stop offset="0%" />
+  ...
+  <stop offset="20%" />
+  ...
+  <stop offset="100%" />
+</linearGradient>
+```
+
+**参数**：x1、y1 定义线性渐变的起点， x2、y2 定义渐变的终点。
+
+#### 径向渐变
+
+**语法**：
+
+```js
+<radialGradient cx="" cy="" r="" fx="" fy="">
+  <stop offset="0%" />
+  ...
+  <stop offset="20%" />
+  ...
+  <stop offset="100%" />
+</radialGradient>
+```
+
+**参数**：cx、cy、r 分别为圆的坐标和半径，也就是渐变的范围，fx、fy 定义渐变的中心点，也叫渐变的焦点。
