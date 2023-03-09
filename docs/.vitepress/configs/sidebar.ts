@@ -57,7 +57,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     {
       text: 'canvas 相关',
       collapsed: false,
-      items: [{ text: 'canvas 指南', link: '/daily/canvas/canvas' }]
+      items: [
+        { text: 'canvas 入门指南', link: '/daily/canvas/canvas' },
+        { text: 'canvas API', link: '/daily/canvas/canvasApi' }
+      ]
     },
     {
       text: 'SVG',
