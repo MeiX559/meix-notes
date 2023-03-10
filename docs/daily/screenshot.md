@@ -71,13 +71,30 @@ target.onload = () => {
 - 调用 canvas 绘制：需要进行布局计算，需要关注 float、z-index、position 等布局定位的处理。
 - 样式合成绘制计算较为繁琐。绘制起来也很繁琐，造成开发量大。
 
-### html2canvas
+接下来将介绍两个插件实现前端截图功能，分别是 [html2canvas](https://github.com/niklasvh/html2canvas) 和 [dom-to-image](https://github.com/tsayen/dom-to-image)
 
-[html2canvas](https://github.com/niklasvh/html2canvas)
+### html2canvas
 
 [html2canvas 文档](http://html2canvas.hertzen.com/)
 
 `html2canvas`库主要使用的是 Canvas 实现方式，主要过程是手动将 dom 重新绘制成 canvas，并没有截取页面的屏幕截图，而是根据从 DOM 读取的属性构建页面的表示，因此，它只能正确渲染可以理解的属性，有许多 CSS 属性无法正确渲染。
+
+[html2canvas 支持的 CSS 属性](http://html2canvas.hertzen.com/features)
+
+:::tip 暂时不支持渲染的 CSS 属性
+
+- background-blend-mode
+- border-image
+- box-decoration-break
+- box-shadow
+- filter
+- font-variant-ligatures
+- mix-blend-mode
+- object-fit
+- repeating-linear-gradient()
+- writing-mode
+- zoom
+  :::
 
 #### 使用
 
@@ -107,6 +124,8 @@ options 对象可选的值
 | scrollY                | Element scrollY         | 渲染元素时使用的 y 轴位置(例如，如果元素使用 position: fixed)                        |
 | windowWidth            | Window.innerWidth       | 渲染元素时使用的窗口宽度，这可能会影响诸如媒体查询之类的事情                         |
 | windowHeight           | Window.innerHeight      | 渲染元素时使用的窗口高度，这可能会影响诸如媒体查询之类的事情                         |
+
+**语法**：
 
 ```js
 // element 为目标绘制节点，options为可选参数
@@ -353,6 +372,36 @@ async render(element: HTMLElement): Promise<HTMLCanvasElement> {
     const img = await loadSerializedSVG(svg);
     this.ctx.drawImage(img, -this.options.x * this.options.scale, -this.options.y * this.options.scale);
     return this.canvas;
+}
+```
+
+**createForeignObjectSVG**
+`createForeignObjectSVG`方法主要就是将 node 节点通过 `foreignObject` 包裹转换为 svg
+
+```js
+const createForeignObjectSVG = (
+  width: number,
+  height: number,
+  x: number,
+  y: number,
+  node: Node
+): SVGForeignObjectElement => {
+  const xmlns = 'http://www.w3.org/2000/svg'
+  const svg = document.createElementNS(xmlns, 'svg')
+  const foreignObject = document.createElementNS(xmlns, 'foreignObject')
+  svg.setAttributeNS(null, 'width', width.toString())
+  svg.setAttributeNS(null, 'height', height.toString())
+
+  foreignObject.setAttributeNS(null, 'width', '100%')
+  foreignObject.setAttributeNS(null, 'height', '100%')
+  foreignObject.setAttributeNS(null, 'x', x.toString())
+  foreignObject.setAttributeNS(null, 'y', y.toString())
+  foreignObject.setAttributeNS(null, 'externalResourcesRequired', 'true')
+  svg.appendChild(foreignObject)
+
+  foreignObject.appendChild(node)
+
+  return svg
 }
 ```
 
