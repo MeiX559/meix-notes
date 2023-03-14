@@ -64,7 +64,7 @@ target.onload = () => {
 其中，`drawImage`是 canvas 上下文对象的实例方法，提供多种方式将 `CanvasImageSource` 源绘制到 canvas 画布上。`exportNewImage` 用于将 canvas 中的视图信息导出为包含图片展示的 data URI。
 
 从上面 canvas 方案中可以看到基于 canvas 提供的相关基础 API，为前端侧的页面快照处理提供了可能。
-然而，具体的业务应用往往更加复杂，上面的「低配版」实例显然未能覆盖多数的实际场景，例如：
+然而，具体的业务应用往往更加复杂，上面的实例显然未能覆盖多数的实际场景，例如：
 
 - canvas 的 drawImage 方法只接受 CanvasImageSource，而 CanvasImageSource 并不包括文本节点、普通的 div 等，将非 img 的元素绘制到 canvas 需要特定处理。
 - 当有多个 DOM 元素需要绘制时，层级优先级处理较为复杂。
@@ -178,6 +178,7 @@ html2canvas(dom, options).then(function (canvas) {
 2. clone 目标节点并获取样式和内容
 
 3. 解析目标节点
+
    目标节点的样式和内容都获取到了之后，就需要把它所承载的数据信息转化为 Canvas 可以使用的数据类型。在对目标节点的解析方法中，递归整个 DOM 树，并取得每一层节点的数据，对于每一个节点而言需要绘制的部分包括边框、背景、阴影、内容，而对于内容就包含图片、文字、视频等。在整个解析过程中，对目标节点的所有属性进行解析构造，转化成为指定的数据格式，基础数据格式可见以下代码:
 
 ```js
@@ -190,39 +191,18 @@ class ElementContainer {
   readonly elements: ElementContainer[] = [];
   // 当前节点的位置信息（宽/高、横/纵坐标）
   bounds: Bounds;
+  // 用来决定如何渲染的标志
   flags = 0;
   ...
 }
 ```
 
 4. 构建内部渲染器
+
    把目标节点处理成特定的数据结构之后，就需要结合 Canvas 调用渲染方法了，Canvas 绘图需要根据样式计算哪些元素应该绘制在上层，哪些在下层，那么这个规则是什么样的呢？这里就涉及到 CSS 布局相关的一些知识。默认情况下，CSS 是流式布局的，元素与元素之间不会重叠。不过有些情况下，这种流式布局会被打破，比如使用了浮动(float)和定位(position)。因此需要识别出哪些脱离了正常文档流的元素，并记住它们的层叠信息，以便正确地渲染它们。那些脱离正常文档流的元素会形成一个层叠上下文。
 
    层叠上下文和层叠顺序的规则：
    ![层叠顺序图](./images/stackingLevel.png)
-
-   Canvas 绘制节点的时候，需要生成指定的层叠数据，因此需要先计算出整个目标节点里子节点渲染时所展现的不同层级，构造出所有节点对应的层叠上下文在内部所表现出来的数据结构，具体数据结构如下:
-
-   ```js
-   // 当前元素
-   element: ElementPaint
-   // z-index 为负, 形成层叠上下文
-   negativeZIndex: StackingContext[];
-   // z-index 为 0、auto、transform 或 opacity, 形成层叠上下文
-   zeroOrAutoZIndexOrTransformedOrOpacity: StackingContext[];
-   // 定位和 z-index 形成的层叠上下文
-   positiveZIndex: StackingContext[];
-   // 没有定位和 float 形成的层叠上下文
-   nonPositionedFloats: StackingContext[];
-   // 没有定位和内联形成的层叠上下文
-   nonPositionedInlineLevel: StackingContext[];
-   // 内联节点
-   inlineLevel: ElementPaint[];
-   // 不是内联的节点
-   nonInlineLevel: ElementPaint[];
-   ```
-
-   基于以上数据结构，将元素子节点分类，添加到指定的数组中，解析层叠信息的方式和解析节点信息的方式类似，都是递归整棵树，收集树的每一层的信息，形成一颗包含层叠信息的层叠树。
 
 5. 绘制数据
    调用`renderStackContent`方法，将 DOM 元素一层一层渲染到 canvas 中。
@@ -249,8 +229,8 @@ const html2canvas = (
 `renderElement`方法主要做的事情：
 
 1. 构建配置项，解析用户传入的 options，将其与默认的 options 合并，得到用于渲染的配置数据 renderOptions。
-2. 对传入的 DOM 元素进行解析，取到节点信息和样式信息，这些节点信息会和上一步的 renderOptions 配置一起传给 `canvasRenderer` 实例，用来绘制 canvas
-3. `canvasRenderer` 将依据浏览器渲染层叠内容的规则，将用户传入的 DOM 元素渲染到一个 canvas 中，这个 canvas 我们可以在 then 方法的回调中取到
+2. 获取 DOM 节点信息，对传入的 DOM 元素进行解析，取到节点信息和样式信息，这些节点信息会和上一步的 renderOptions 配置一起传给 `canvasRenderer` 实例，用来绘制 canvas。
+3. `canvasRenderer` 将依据浏览器渲染层叠内容的规则，将用户传入的 DOM 元素渲染到一个 canvas 中。
 
 `renderElement`方法的核心代码如下：
 
@@ -266,8 +246,8 @@ const renderElement = async (
     return await renderer.render(clonedElement)
   } else {
     // canvas渲染
-    const renderer = new CanvasRenderer(renderOptions) // 根据渲染的配置数据生成canvasRenderer实例
     const root = parseTree(clonedElement) // 解析用户传入的DOM元素（为了不影响原始的DOM，实际上会克隆一个新的DOM元素），获取节点信息
+    const renderer = new CanvasRenderer(renderOptions) // 根据渲染的配置数据生成canvasRenderer实例
     return await renderer.render(root) // canvasRenderer实例会根据解析到的节点信息，依据浏览器渲染层叠内容的规则，将DOM元素内容渲染到canvas中
   }
 }
@@ -275,13 +255,91 @@ const renderElement = async (
 
 **parseTree 解析节点信息**
 
-parseTree 的入参是一个普通的 DOM 元素，返回值是一个 `ElementContainer` 对象，该对象主要包含：
+```js
+const parseTree = (context: Context, element: HTMLElement): ElementContainer => {
+  // 根据不同的元素创建不同的ElementContainer获取元素节点信息
+  const container = createContainer(context, element)
+  // 用来决定如何渲染的标志
+  container.flags |= FLAGS.CREATES_REAL_STACKING_CONTEXT
+  // 递归dom元素解析节点信息
+  parseNodeTree(context, element, container, container)
+  return container
+}
+```
+
+parseTree 的入参是一个普通的 DOM 元素，根据不同的元素，返回对应的`ElementContainer`对象。共有以下几类：
+
+- image（ImageElementContainer）
+- canvas (CanvasElementContainer)
+- svg (SVGElementContainer)
+- li (LIElementContainer)
+- ol (OLElementContainer)
+- input (InputElementContainer)
+- select (SelectElementContainer)
+- textarea (TextareaElementContainer)
+- iframe (IFrameElementContainer)
+- 其他类型（ElementContainer）
+
+对于`ElementContainer` 对象获取的信息：
 
 - bounds：位置信息（width|height|left|top）
 - textNodes：文本节点
 - elements：子元素信息
 - flags：用来决定如何渲染的标志
 - styles：样式
+
+`ImageElementContainer`对象获取的信息：
+
+- src：图片地址
+- intrinsicWidth：图片宽度
+- intrinsicHeight ： 图片高度
+
+`CanvasElementContainer`对象获取的信息：
+
+- canvas：canvas 元素
+- intrinsicWidth：canvas 宽度
+- intrinsicHeight ： canvas 高度
+
+`SVGElementContainer`对象获取的信息：
+
+- svg: svg 元素
+- intrinsicWidth： 元素宽度
+- intrinsicHeight ： 元素高度
+
+`isLIElement`对象获取的信息：
+
+- value: 元素内容
+
+`isOLElement`对象获取的信息：
+
+- start: ol 列表的 type 属性值
+- reversed： 列表顺序反转
+
+`isInputElement`对象获取的信息：
+
+- svg: svg 元素
+- intrinsicWidth： 元素宽度
+- intrinsicHeight ： 元素高度
+
+`isSelectElement`对象获取的信息：
+
+- type: 元素类型（单选框或复选框）
+- checked： 元素是否选中
+- value ： 元素值
+
+`isTextareaElement`对象获取的信息：
+
+- value: 元素内容
+
+`isIFrameElement`对象获取的信息：
+
+- src: 规定在 iframe 中显示的文档的 URL
+- width： iframe 宽度
+- height ： iframe 高度
+- tree：element 元素
+- backgroundColor：背景颜色
+
+对于 iframe 的解析，首先解析 iframe,对于 iframe 内的 dom 元素再次调用 parseTree 解析。
 
 该对象包含的只是节点树的相关信息，不包含层叠数据，层叠数据在 parseStackingContexts 方法中取得。
 
@@ -295,6 +353,7 @@ parseTree 的入参是一个普通的 DOM 元素，返回值是一个 `ElementCo
 
 ```js
 async render(element: ElementContainer): Promise<HTMLCanvasElement> {
+  // 解析层叠信息
   const stack = parseStackingContexts(element);
   // 渲染层叠内容
   await this.renderStack(stack);
@@ -304,11 +363,45 @@ async render(element: ElementContainer): Promise<HTMLCanvasElement> {
 
 `parseStackingContexts`解析层叠信息的方式和`parseTree`解析节点信息的方式类似，都是递归整棵树，收集树的每一层的信息，形成一颗包含层叠信息的层叠树。
 
+```js
+const parseStackingContexts = (container: ElementContainer): StackingContext => {
+  // 解析层叠信息
+  const paintContainer = new ElementPaint(container, null)
+  // 生成指定的层叠数据
+  const root = new StackingContext(paintContainer)
+  const listItems: ElementPaint[] = []
+  parseStackTree(paintContainer, root, root, listItems)
+  processListItems(paintContainer.container, listItems)
+  return root
+}
+```
+
+层叠数据结构如下：
+
+```js
+   // 当前元素
+   element: ElementPaint
+   // z-index 为负, 形成层叠上下文
+   negativeZIndex: StackingContext[];
+   // z-index 为 0、auto、transform 或 opacity, 形成层叠上下文
+   zeroOrAutoZIndexOrTransformedOrOpacity: StackingContext[];
+   // 定位和 z-index 形成的层叠上下文
+   positiveZIndex: StackingContext[];
+   // 没有定位和 float 形成的层叠上下文
+   nonPositionedFloats: StackingContext[];
+   // 没有定位和内联形成的层叠上下文
+   nonPositionedInlineLevel: StackingContext[];
+   // 内联节点
+   inlineLevel: ElementPaint[];
+   // 不是内联的节点
+   nonInlineLevel: ElementPaint[];
+```
+
 而渲染层叠内容的`renderStack`方式实际上调用的是`renderStackContent`方法，该方法是整个渲染流程中最为关键的方法。
 
 **renderStackContent**
 
-`renderStackContent`主要做的是将 DOM 元素一层一层得渲染到离屏 canvas 中。默认情况下，CSS 是流式布局的，元素与元素之间不会重叠。不过有些情况下，这种流式布局会被打破，比如使用了浮动(float)和定位(position)，那些脱离正常文档流的元素会形成一个层叠上下文，因此需要根据层叠上下文规则进行渲染，`renderStackContent`就是对 CSS 层叠布局规则的一个实现：
+`renderStackContent`主要做的是将 DOM 元素一层一层的渲染到离屏 canvas 中。默认情况下，CSS 是流式布局的，元素与元素之间不会重叠。不过有些情况下，这种流式布局会被打破，比如使用了浮动(float)和定位(position)，那些脱离正常文档流的元素会形成一个层叠上下文，因此需要根据层叠上下文规则进行渲染，`renderStackContent`就是对 CSS 层叠布局规则的一个实现：
 
 ```js
 async renderStackContent(stack: StackingContext) {
