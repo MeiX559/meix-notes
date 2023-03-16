@@ -65,6 +65,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     {
       text: 'SVG',
       link: '/daily/svg'
+    },
+    {
+      text: 'Taro跨端开发小程序',
+      link: '/daily/taro'
     }
   ],
   '/tools/': [
