@@ -30,9 +30,13 @@ export default defineConfig({
         text: '日常记录',
         link: '/daily/screenshot'
       },
+      // {
+      //   text: '前端书籍',
+      //   link: '/books/'
+      // },
       {
-        text: '前端书籍',
-        link: '/books/'
+        text: '源码阅读',
+        link: '/sourceCode/dom-to-image'
       },
       {
         text: '个人主页',

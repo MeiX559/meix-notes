@@ -103,5 +103,15 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         // { text: 'npm scripts', link: '/tools/npm/scripts' }
       ]
     }
+  ],
+  '/sourceCode': [
+    {
+      text: '前端截图相关',
+      collapsed: false,
+      items: [
+        { text: 'String 方法', link: '/sourceCode/dom-to-image' },
+        { text: 'JS 数组方法', link: '/sourceCode/html2canvas' }
+      ]
+    }
   ]
 }
