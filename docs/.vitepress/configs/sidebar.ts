@@ -109,8 +109,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       text: '前端截图相关',
       collapsed: false,
       items: [
-        { text: 'String 方法', link: '/sourceCode/dom-to-image' },
-        { text: 'JS 数组方法', link: '/sourceCode/html2canvas' }
+        { text: 'dom-to-image', link: '/sourceCode/dom-to-image' },
+        { text: 'html2canvas', link: '/sourceCode/html2canvas' }
       ]
     }
   ]
