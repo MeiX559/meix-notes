@@ -91,7 +91,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'String 方法', link: '/tools/javascript/index' },
         { text: 'JS 数组方法', link: '/tools/javascript/arr' },
         { text: 'JS 对象方法', link: '/tools/javascript/obj' },
-        { text: '时间日期相关', link: '/tools/javascript/date' }
+        { text: '时间日期相关', link: '/tools/javascript/date' },
+        { text: '循环方法', link: '/tools/javascript/circulate' }
       ]
     },
     {
