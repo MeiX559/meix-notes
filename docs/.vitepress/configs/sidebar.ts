@@ -18,6 +18,11 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       link: '/fe/es6/index'
     },
     {
+      text: 'TypeScript',
+      collapsed: false,
+      items: [{ text: 'TypeScript 编译配置', link: '/fe/typeScript/config' }]
+    },
+    {
       text: 'CSS 知识概览',
       collapsed: false,
       items: [
