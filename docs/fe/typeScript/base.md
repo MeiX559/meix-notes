@@ -483,18 +483,161 @@ type Partial<T> = {
 示例：
 
 ```js
+interface Person {
+  name: string;
+  age: number;
+  sex: string;
+}
 
+type NewPerson = Partial<Person>
+
+const person: NewPerson = {
+  name: 'Bruce',
+  sex: 'man'
+}
 ```
 
 #### Required
 
+`Required`用于将类型的属性变成必选。
+
+定义：
+
+```js
+type Required<T> = {
+    [K in keyof T]-?: T[K];
+}
+// -?代表移除可选特性
+```
+
+示例：
+
+```js
+interface Person {
+  name?: string;
+  age?: number;
+}
+
+type NewPerson = Required<Person> //Required将移出可选属性
+
+const person: NewPerson = {
+  //Property 'age' is missing in type '{ name: string; }' but required in type 'Required<Person>'.
+  name: 'Bruce'
+}
+```
+
 #### Readonly
+
+`Readonly`将类型的属性变成只读。
+
+定义：
+
+```js
+type Readonly<T> = {
+    readonly [K in keyof T]: T[K];
+}
+```
+
+示例：
+
+```js
+interface Person {
+  name: string;
+  age: number;
+}
+
+type NewPerson = Readonly<Person>
+const person: NewPerson = {
+  name: 'Meix',
+  age: 18
+}
+
+// 尝试修改属性值会报错
+person.age = 20 // Cannot assign to 'age' because it is a read-only property
+```
 
 #### Record
 
+Record<K extends keyof any, T>将 K 中所有属性的值转化为 T 类型。
+
+定义：
+
+```js
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+}
+```
+
+示例：
+
+```js
+interface PersonInfo {
+  name: string;
+  age: number;
+}
+
+type Person = 'Meix' | 'Bruce' | 'LiangBo'
+
+const ny: Record<Person, PersonInfo> = {
+  Meix: { name: 'Meix', age: 18 },
+  Bruce: { name: 'Bruce', age: 20 },
+  LiangBo: { name: 'LiangBo', age: 20 }
+}
+```
+
 #### ReturnType
 
+用来获取一个函数的返回值类型。
+
+定义：
+
+```js
+type ReturnType<T extends (...args: any[]) => any> = T extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : any;
+```
+
+示例：
+
+```js
+type Fn = (v: string) => number
+
+// x的类型为Fn函数的返回值类型
+let x: ReturnType<Fn> = 888
+x = '888' // Type 'string' is not assignable to type 'number'
+```
+
 #### Pick
+
+从对象结构的类型中挑出一些指定的属性，来构造一个新类型。
+
+定义：
+
+```js
+type Pick<T, U extends keyof T> = {
+    [P in U]: T[P];
+}
+```
+
+示例：
+
+```js
+interface Person {
+  name: string;
+  age: number;
+  sex: string;
+}
+
+type NewPerson = Pick<Person, 'name' | 'sex'>
+
+const person: NewPerson = {
+  name: 'Bruce',
+  sex: 'man',
+  age: 1 //Type '{ name: string; sex: string; age: number; }' is not assignable to type 'NewPerson'.
+}
+```
 
 #### Omit
 
