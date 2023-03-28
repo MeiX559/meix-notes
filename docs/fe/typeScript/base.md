@@ -278,6 +278,98 @@ console.log(c) //2
 
 ## 接口
 
+在 TS 中，使用接口（interfaces）来定义对象的类型，换句话说就是使用接口对「对象的形状」进行描述。
+
+```js
+// 定义一个接口，接口首字母通常大写
+interface Person {
+  name: string;
+  age: number;
+}
+
+// 定义一个变量person，这个变量的类型是Person，这样就约束了person的形状必须与接口Person一致
+const person: Person = {
+  name: 'Bruce',
+  age: 18
+}
+```
+
+有时候希望对象中的一些字段只能在创建的时候被赋值，那么可以用`readonly`定义只读属性
+
+```js
+interface Person {
+    name: string;
+    readonly age: number;
+}
+
+const person:Person = {
+    name:'Meix',
+    age:18
+}
+person.age = 20  //Cannot assign to 'age' because it is a read-only property.
+```
+
+:::warning 注意点
+只读的约束作用于第一次给对象赋值的时候，而非第一次给只读属性赋值的时候
+:::
+
+可选属性
+
+```js
+interface Person {
+  name: string;
+  age?: number; //age属性是可选的
+}
+
+const person: Person = {
+  name: 'Meix'
+}
+```
+
+### 类型断言
+
+类型断言的意义就等同于在告诉程序，你很清楚自己在做什么，此时程序就不会再进行额外的属性检查了
+
+```js
+interface Person {
+    name: string;
+    age?: number;
+}
+
+const person: Person = {
+    name: 'Bruce',
+    age: 18,
+    sex: '男',
+} as Person; // ok
+```
+
+### 接口与类型别名的区别
+
+类型别名是给一个类型起个新名字，起别名不会新建一个类型，它是创建了一个新名字来引用那个类型。
+
+- 与接口不同的是，类型别名可以作用于基本类型、联合类型、元组以及其它任何需要手写的类型。
+- 接口可以定义多次，类型别名不可以。
+
+```js
+// 接口
+interface Person {
+  name: string;
+  age: number;
+  sex: string;
+}
+
+// 类型别名
+type Person = {
+  name: string,
+  age: number,
+  sex: string
+}
+type Name = string // 基本类型
+type Sex = '男' | '女' | '不详' // 联合类型
+type PersonTuple = [string, number, string] // 元组
+type ComputeAge = () => number // 函数
+```
+
 ## 泛型
 
 在了解泛型前，请简单思考这个问题：
