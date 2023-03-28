@@ -20,7 +20,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     {
       text: 'TypeScript',
       collapsed: false,
-      items: [{ text: 'TypeScript 编译配置', link: '/fe/typeScript/config' }]
+      items: [
+        { text: 'TypeScript 入门手册', link: '/fe/typeScript/base' },
+        { text: 'TypeScript 编译配置', link: '/fe/typeScript/config' }
+      ]
     },
     {
       text: 'CSS 知识概览',
