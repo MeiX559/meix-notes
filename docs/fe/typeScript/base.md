@@ -42,6 +42,18 @@ let decLiteral: number = 6 // 十进制
 let hexLiteral: number = 0xf00d // 十六进制
 ```
 
+#### null 和 undefined
+
+默认情况下`null`和`undefined`是所有类型的子类型，可以把`null`和`undefined`赋值给其它任何类型.
+
+```js
+let num: number = 1
+num = null
+num = undefined
+```
+
+如果在`tsconfig.json`里配置了"strictNullChecks": true，null 就只能赋值给 any、unknown 和它本身的类型（null），undefined 就只能赋值给 any、unknown、void 和它本身的类型（undefined）。
+
 ## 其他类型
 
 ### 任意类型 any
@@ -270,11 +282,129 @@ console.log(c) //2
 
 ## 类型推断
 
+基于赋值表达式推断类型的能力称为类型推断。
+
+在 TS 中，函数返回值、具有初始化值的变量、有默认值的函数参数的类型都可以根据上下文推断出来。
+
+如果定义的时候没有赋值，不管之后有没有赋值，都会被推断为 any 类型。
+
+```js
+let a // let a: any
+a = 'Bruce'
+a = 666
+a = true
+```
+
 ## 类型断言
 
-## 字面量类型
+```js
+const arr: number[] = [1, 2, 3]
+const res: number = arr.find((num) => num > 2) // Type 'undefined' is not assignable to type 'number'
+```
+
+上例中，res 的值一定是 3，所以它的类型应该是 number。但是 TS 的类型检测无法做到绝对智能，在 TS 看来，res 的类型既可能是 number 也可能是 undefined，所以提示错误信息：不能把 undefined 类型分配给 number 类型。
+
+对于这种情况就可以使用类型断言了。类型断言是一种笃定的方式，它只作用于类型层面的强制类型转换（可以理解成一种暂时的善意的谎言，不会影响运行效果），告诉编译器应该按照我们的方式来做类型检查。
+
+类型断言可以使用以下两种方法：
+
+- as
+- 尖括号
+
+### as
+
+```js
+const arr: number[] = [1, 2, 3];
+const res: number = arr.find(num => num > 2) as number;
+```
+
+### 尖括号
+
+```js
+const value: any = 'str!';
+const valueLength: number = (<string>value).length; //尖括号格式会与 react 中的 JSX 产生语法冲突
+
+```
+
+以上两种语法虽然没有区别，但是尖括号格式会与 react 中的 JSX 产生语法冲突，因此更推荐使用 as 语法。
+
+## 类型拓宽
+
+所有通过 let 和 var 定义的变量、函数的形参、对象的非只读属性，如果满足指定了初始值且未显式添加类型注解的条件，那么它们推断出来的类型就是指定的初始值字面量类型拓宽后的类型，这就是字面量类型拓宽。
+
+```js
+let str = 'Bruce' // let str: string
+
+const b = true // const b: true
+```
+
+除了字面量类型拓宽之外，TS 对某些特定类型值也有类似类型拓宽的设计。
+
+例如对 `null` 和 `undefined` 的类型进行拓宽，通过 let var 定义的变量如果满足未显式添加类型注解且被赋予了 `null` 或 `undefined` 值，则推断出这些变量的类型为 `any`.
+
+```js
+// let定义的变量未显示添加类型注解且被赋予了null或undefined，将被推断为any
+let a = null //let a: any
+let b = undefined //let b: any
+
+// const 定义的变量不会出现上述let类似的情况
+const c = null //const c: null
+const d = undefined //const d: undefined
+```
+
+再来看一个例子：
+
+```js
+type ObjType = {
+  a: number,
+  b: number,
+  c: number
+}
+
+type KeysType = 'a' | 'b' | 'c'
+
+function fn(object: ObjType, key: KeysType) {
+  return object[key]
+}
+
+let object = { a: 123, b: 456, c: 789 }
+let key = 'a'
+fn(object, key) // Argument of type 'string' is not assignable to parameter of type '"a" | "b" | "c"'
+```
+
+问：上述代码提示错误 ❎，为什么呢？
+
+答：这是因为变量 key 的类型被推断成了 string 类型（类型拓宽） ，但是函数期望它的第二个参数是一个更具体的类型，所以报错。
+
+解决：
+
+方案一：使用 TS 提供的控制拓宽的方法，使用 const 定义 key 变量，即：const key = 'a';这样就不会报错了。
+
+方案二：使用 const 断言
+
+```js
+let key = 'a' as const;
+```
+
+在某个值后面使用 const 断言后，TS 会为这个值推断出最窄的类型，没有拓宽。
 
 ## 联合类型
+
+联合类型是多种类型的集合，用来约束取值只能是某几个值中的一个，使用|分隔每个类型。
+
+```js
+let a: number | string
+a = 12 // OK
+a = 'str' // OK
+```
+
+## 类型别名
+
+类型别名是给一个类型起个新名字，起别名不会新建一个类型，它是创建了一个新名字来引用那个类型。
+
+```js
+type KeysType = number | string
+```
 
 ## 接口
 
