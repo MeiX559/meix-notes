@@ -120,7 +120,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       collapsed: false,
       items: [
         { text: 'dom-to-image', link: '/sourceCode/dom-to-image' },
-        { text: 'html2canvas', link: '/sourceCode/html2canvas' }
+        { text: 'html2canvas', link: '/sourceCode/html2canvas' },
+        { text: 'omit', link: '/sourceCode/omit' }
       ]
     }
   ]
