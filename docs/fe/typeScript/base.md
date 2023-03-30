@@ -269,15 +269,102 @@ const arr: readonly [string, number] = ['Bruce', 200];
 arr[0] = 'Bruce'  // Cannot assign to '0' because it is a read-only property.
 ```
 
+### 函数
+
+```js
+// 函数声明形式
+function add(a: number, b: number): number {
+  return a + b
+}
+
+// 箭头函数形式
+const add = (a: number, b: number): number => a + b
+```
+
+上述代码 add 函数接受两个 number 类型的参数，并且它的返回值也是 number 类型。
+
+#### 可选参数
+
+```js
+const fn = (name: string, age?: number): string => `${name}---`
+```
+
+:::warning 注意点
+可选参数后面不可再出现必选参数。
+:::
+
+#### 参数默认值
+
+可以给参数设置一个默认值，当调用时没有传该参数或者传入了 `undefined` 时，这个默认值就生效了。
+
+```js
+const fn = (name: string = 'Meix', age?: number): string => `${name}---`
+// 参数未传，将使用默认值
+console.log(fn()) // "Meix---"
+```
+
+:::warning 注意点
+有默认值的参数也可放置在必需参数的前面，如果想要触发这个参数的默认值，必须要主动的传入 `undefined` 才可以。
+:::
+
+#### 函数重载
+
+```js
+type UnionType = number | string
+
+function sum(x: UnionType, y: UnionType) {
+  if (typeof x === 'string' || typeof y === 'string') {
+    return x.toString() + y.toString()
+  }
+  return x + y
+}
+
+const res = sum('你', '好')
+res.split('') // Property 'split' does not exist on type 'string | number'.
+```
+
+上述代码中，自然的会认为 res 变量的类型为 string，可以使用 split 方法，但是 TS 提示报错了，报错显示类型 number 上不存在 split 属性。
+
+问：该如何解决上述问题呢？
+
+答：函数重载隆重登场
+
+```js
+type UnionType = number | string;
+function sum(x: number, y: number): number;
+function sum(x: string, y: string): string;
+function sum(x: string, y: number): string;
+function sum(x: number, y: string): string;
+function sum(x: UnionType, y: UnionType) {
+    if (typeof x === 'string' || typeof y === 'string') {
+        return x.toString() + y.toString();
+    }
+    return x + y;
+}
+
+const res = sum('你', '好');
+res.split('');  //OK
+```
+
 ### 枚举 enum
 
 `enum`用于定义数组集合
 
 ```js
-enum Color{_Red_,_Green_,_Blue_}
-enum Color{_Red_,_Green_,_Blue_}
-let c: Color = Color._Blue
-console.log(c) //2
+// 默认从0开始
+enum Color{Red,Green,Blue}
+
+// 定义Red从1开始
+enum Color1{Red =1,Green,Blue}
+
+let c: Color = Color.Blue
+let r:Color = Color.Red
+
+let c1: Color1 = Color1.Blue
+let r1:Color1 = Color1.Red
+
+console.log(c,c1) //2,3
+console.log(r,r1) // 0,1
 ```
 
 ## 类型推断
