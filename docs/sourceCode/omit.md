@@ -42,10 +42,10 @@ scripts:项目中可执行的命令
 
 ## 源码解析
 
-源码十分的简单，就是暴露出了一个函数 omit，该函数接收两个参数：
+源码十分的简单，就是暴露出了一个函数 `omit`，该函数接收两个参数：
 
-- obj:源数据对象，方法体内部会对该对象进行浅拷贝.
-- fields:要删除的属性，该参数是一个字符串数组.
+- **obj**:源数据对象，方法体内部会对该对象进行浅拷贝.
+- **fields**:要删除的属性，该参数是一个字符串数组.
 
 ```js
 function omit(obj, fields) {
@@ -61,8 +61,91 @@ function omit(obj, fields) {
 export default omit
 ```
 
-omit 方法首先对 obj 浅拷贝一份，然后循环一遍 fields 数组，依次删除拷贝对象的属性，最后将该拷贝的数组返回出去。
+`omit` 方法首先对 obj 浅拷贝一份，然后循环一遍 fields 数组，依次删除拷贝对象的属性，最后将该拷贝的数组返回出去。
 
-## TypeScript 重写
+## 安装 jest 重写测试用例
 
-## npm 发包
+### 安装
+
+```sh
+# 安装依赖
+npm i jest -D
+# 添加 jest.config.js
+npx jest --init
+```
+
+根据提示完成配置后，会在根目录下会生成 jext.config.js, 并且重写了 package.json 下的 script
+
+```js
+"scripts": {
+   "test": "jest",
+   // 原来是  "test": "father test",
+}
+```
+
+此时执行 npm run test 会报错，原因是 jest 不能在模块外部使用 import 语句。
+
+解决：配置 babel
+
+```sh
+npm i babel-jest @babel/core @babel/preset-env -D
+```
+
+在根目录下新建.babel.config.js
+
+```js
+module.exports = {
+  presets: [['@babel/preset-env', { targets: { node: 'current' } }]]
+}
+```
+
+在根目录下新建 .babelrc
+
+```js
+ {
+  "env": {
+    "test": {
+      "plugins": ["@babel/plugin-transform-modules-commonjs"]
+    }
+  }
+}
+```
+
+最终执行 npm run test 成功。
+
+### 重写测试用例
+
+将 assert 改为 jest
+
+```js
+// import assert from 'assert';
+import omit from '../src'
+
+describe('omit', () => {
+  it('should create a shallow copy', () => {
+    const benjy = { name: 'Benjy' }
+    const copy = omit(benjy, [])
+    expect(copy).toEqual(benjy)
+    // assert.deepEqual(copy, benjy);
+    // assert.notEqual(copy, benjy);
+  })
+
+  it('should drop fields which are passed in', () => {
+    const benjy = { name: 'Benjy', age: 18 }
+    const target1 = omit(benjy, ['age'])
+    const target2 = omit(benjy, ['age', 'name'])
+    expect(target1).toEqual({ name: 'Benjy' })
+    expect(target2).toEqual({})
+    // assert.deepEqual(omit(benjy, ['age']), { name: 'Benjy' });
+    // assert.deepEqual(omit(benjy, ['name', 'age']), {});
+  })
+})
+```
+
+执行 npm run test 成功。
+
+## 总结
+
+`omit` 函数的作用：删除指定对象中的属性，并返回一个新对象。
+
+原理：使用 `Object.assign()` API 浅拷贝一份源对象，然后循环要删除的属性(第二个参数是一个字符串数组)，将其从拷贝对象中删除，并且返回这个拷贝对象。
