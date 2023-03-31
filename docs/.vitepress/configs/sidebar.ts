@@ -106,7 +106,6 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: 'npm 相关',
-
       collapsed: false,
       items: [
         { text: 'npm 常用命令', link: '/tools/npm/command' }
@@ -116,12 +115,19 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   ],
   '/sourceCode': [
     {
+      text: 'omit源码阅读',
+      link: '/sourceCode/omit'
+    },
+    {
+      text: 'axios源码阅读',
+      link: '/sourceCode/axios'
+    },
+    {
       text: '前端截图相关',
       collapsed: false,
       items: [
         { text: 'dom-to-image', link: '/sourceCode/dom-to-image' },
-        { text: 'html2canvas', link: '/sourceCode/html2canvas' },
-        { text: 'omit', link: '/sourceCode/omit' }
+        { text: 'html2canvas', link: '/sourceCode/html2canvas' }
       ]
     }
   ]
