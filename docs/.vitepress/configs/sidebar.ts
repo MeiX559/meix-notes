@@ -119,8 +119,12 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       link: '/sourceCode/omit'
     },
     {
-      text: 'axios源码阅读',
-      link: '/sourceCode/axios'
+      text: 'axios相关',
+      collapsed: false,
+      items: [
+        // { text: 'axios使用手册', link: '/sourceCode/axiosUserManual' },
+        { text: 'axios源码阅读', link: '/sourceCode/axios' }
+      ]
     },
     {
       text: '前端截图相关',

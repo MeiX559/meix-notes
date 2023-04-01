@@ -324,22 +324,126 @@ Axios.prototype.request = function request(config) {
 
   // Hook up interceptors middleware
   // 组成`Promise`链 ，返回Promise实例
+  // 把 xhr 请求 的 dispatchRequest 和 undefined 放在一个数组里
   var chain = [dispatchRequest, undefined]
+  // 创建一个请求实例，相当于 new Promise(config)
   var promise = Promise.resolve(config)
 
+  // 遍历所有请求拦截器，放在chain的前面
   this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
     chain.unshift(interceptor.fulfilled, interceptor.rejected)
   })
 
+  // 遍历所有响应拦截器，push到chain的后面
   this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
     chain.push(interceptor.fulfilled, interceptor.rejected)
   })
 
+  // 遍历chain数组，直到遍历chain.length为0
   while (chain.length) {
     promise = promise.then(chain.shift(), chain.shift())
   }
 
   return promise
+}
+```
+
+#### dispatchRequest
+
+```js
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  // 取消相关
+  throwIfCancellationRequested(config)
+
+  // Ensure headers exist  确保headers存在
+  config.headers = config.headers || {}
+
+  // Transform request data  转换请求的数据
+  // transformData 就是遍历数组，调用数组里的传递 data 和 headers 参数调用函数，返回数据。
+  config.data = transformData(config.data, config.headers, config.transformRequest)
+
+  // Flatten headers   拍平config.headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  )
+
+  // 删除一些 config.header。  以下这些方法 删除 headers
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method]
+    }
+  )
+
+  // 返回适配器adapter（Promise实例）执行后 then执行后的 Promise实例。返回结果传递给响应拦截器处理。
+  var adapter = config.adapter || defaults.adapter
+
+  return adapter(config).then(
+    function onAdapterResolution(response) {
+      throwIfCancellationRequested(config)
+
+      // Transform response data
+      response.data = transformData(response.data, response.headers, config.transformResponse)
+
+      return response
+    },
+    function onAdapterRejection(reason) {
+      if (!isCancel(reason)) {
+        throwIfCancellationRequested(config)
+
+        // Transform response data
+        if (reason && reason.response) {
+          reason.response.data = transformData(
+            reason.response.data,
+            reason.response.headers,
+            config.transformResponse
+          )
+        }
+      }
+
+      return Promise.reject(reason)
+    }
+  )
+}
+```
+
+##### adapter 适配器
+
+```js
+var adapter = config.adapter || defaults.adapter
+```
+
+根据上述代码的 adapter，用户可以自定义 adapter，没有自定义 adapter 的话，就使用默认的 adapter，接着看 defaults.adapter，即在文件夹：axios/lib/defaults.js
+
+对于浏览器引入 xhr，对于 node 环境则引入 http。
+
+```js
+function getDefaultAdapter() {
+  var adapter
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = require('./adapters/xhr')
+  } else if (
+    typeof process !== 'undefined' &&
+    Object.prototype.toString.call(process) === '[object process]'
+  ) {
+    // For node use HTTP adapter
+    adapter = require('./adapters/http')
+  }
+  return adapter
+}
+
+var defaults = {
+  adapter: getDefaultAdapter()
+  ...
 }
 ```
 
@@ -440,5 +544,3 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 ```
 
 遍历执行所有拦截器，传递一个回调函数（每一个拦截器函数作为参数）调用，被移除的一项是 null，所以不会执行，也就达到了移除的效果。
-
-## 总结
