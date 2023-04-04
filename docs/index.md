@@ -14,6 +14,9 @@ hero:
     - text: 提效工具
       link: /tools/online-tools
       theme: alt
+    - text: 站点导航
+      link: /siteLink
+      theme: alt
 features:
   - title: 前端知识
     details: 整理前端所需要的知识点 <br /> 如有异议按你的理解为主，不接受反驳
