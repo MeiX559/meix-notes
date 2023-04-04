@@ -43,7 +43,7 @@ const grid = computed(() => {
       <div v-for="nav in list" :key="nav.title">
         <h2 class="title" v-html="nav.title"></h2>
         <div class="nav-items">
-          <div v-for="item in nav.items" :key="item.title" class="box">
+          <div v-for="item in nav.items" :key="item.title" class="nav-box">
             <VPLink class="NavLink nav-item" :href="item.link" :no-icon="true" v-if="item.icon">
               <div class="top">
                 <VPImage class="link-icon" :image="item.icon" alt="Meix" />
@@ -75,14 +75,14 @@ const grid = computed(() => {
   border-color: var(--vp-c-brand);
   background-color: var(--vp-c-bg-soft-up);
 }
-.box {
+.nav-box {
   display: flex;
   flex-direction: column;
   text-align: center;
   padding: 18px;
   width: 18.75rem;
 }
-.box .top {
+.nav-box .top {
   display: flex;
   align-items: center;
   justify-content: center;
