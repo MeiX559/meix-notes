@@ -35,6 +35,10 @@ export default defineConfig({
       //   link: '/books/'
       // },
       {
+        text: '站点导航',
+        link: '/siteLink/'
+      },
+      {
         text: '源码阅读',
         link: '/sourceCode/dom-to-image'
       },
