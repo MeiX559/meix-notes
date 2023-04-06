@@ -47,11 +47,11 @@ const grid = computed(() => {
             <VPLink class="NavLink nav-item" :href="item.link" :no-icon="true" v-if="item.icon">
               <div class="top">
                 <VPImage class="link-icon" :image="item.icon" alt="Meix" />
+                <p v-if="item.desc" class="item-title" v-html="item.title"></p>
               </div>
-              <p v-if="item.desc" class="item-title" v-html="item.title"></p>
               <p v-if="item.desc" class="details" v-html="item.desc"></p>
             </VPLink>
-            <VPLink class="NavLink item" :href="item.link" :no-icon="true" v-if="!item.icon">
+            <VPLink class="NavLink nav-item" :href="item.link" :no-icon="true" v-if="!item.icon">
               <p v-if="item.desc" class="no-icon-title" v-html="item.title"></p>
               <p v-if="item.desc" class="no-icon-details" v-html="item.desc"></p>
             </VPLink>
@@ -77,18 +77,19 @@ const grid = computed(() => {
 }
 .nav-box {
   display: flex;
-  flex-direction: column;
   text-align: center;
   padding: 18px;
-  width: 18.75rem;
+  width: 240px;
 }
 .nav-box .top {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 128px;
-  height: 128px;
   margin: 0 auto;
+}
+.nav-box .nav-right {
+  display: flex;
+  flex-direction: column;
 }
 .NavLink:deep(.link-icon) {
   width: 36px;
@@ -96,8 +97,8 @@ const grid = computed(() => {
   border-radius: 50%;
 }
 .link-icon {
-  width: 128px;
-  height: 128px;
+  width: 100px;
+  height: 100px;
 }
 .title {
   margin: 0 0 0 12px;
@@ -115,7 +116,6 @@ const grid = computed(() => {
   font-size: 14px;
   font-weight: 500;
   color: var(--vp-c-text-2);
-  border-top: 1px solid var(--vp-c-divider);
 }
 .no-icon-details {
   flex-grow: 1;
@@ -128,26 +128,17 @@ const grid = computed(() => {
 }
 .details {
   flex-grow: 1;
-  margin-top: 0px !important;
+  margin-top: 16px;
   line-height: 24px;
   font-size: 14px;
   font-weight: 500;
   color: var(--vp-c-text-2);
+  border-top: 1px solid var(--vp-c-divider);
 }
 .webDoc {
   position: relative;
   padding: 0 24px;
 }
-/* @media (min-width: 640px) {
-  .webDoc {
-    padding: 0 48px;
-  }
-}
-@media (min-width: 960px) {
-  .webDoc {
-    padding: 0;
-  }
-} */
 .container {
   margin: 0 auto;
   max-width: 1152px;
@@ -161,23 +152,6 @@ const grid = computed(() => {
   padding: 8px;
   width: 100%;
 }
-/* @media (min-width: 640px) {
-  .item.grid-2,
-  .item.grid-4,
-  .item.grid-6 {
-    width: calc(100% / 2);
-  }
-}
-@media (min-width: 768px) {
-  .item.grid-2,
-  .item.grid-4 {
-    width: calc(100% / 2);
-  }
-  .item.grid-3,
-  .item.grid-6 {
-    width: calc(100% / 3);
-  }
-} */
 @media (min-width: 960px) {
   .item.grid-3,
   .item.grid-6 {
@@ -190,7 +164,7 @@ const grid = computed(() => {
     width: calc(100% / 4);
   }
   .nav-items {
-    width: 56.25rem;
+    width: 960px;
   }
 }
 </style>

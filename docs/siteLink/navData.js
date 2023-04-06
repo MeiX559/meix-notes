@@ -166,7 +166,7 @@ export const NAV_DATA = [
       {
         icon: 'https://cn.vuejs.org/logo.svg',
         title: 'Vue Router',
-        desc: 'Vue.js 的官方路由\n为 Vue.js 提供富有表现力、可配置的、方便的路由',
+        desc: 'Vue.js 的官方路由',
         link: 'https://router.vuejs.org/zh'
       },
       {
