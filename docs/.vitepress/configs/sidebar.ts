@@ -78,6 +78,14 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     {
       text: 'Taro跨端开发小程序',
       link: '/daily/taro'
+    },
+    {
+      text: 'dumi 开发components相关',
+      collapsed: false,
+      items: [
+        { text: 'dumi使用说明', link: '/daily/dumi/dumiUse' },
+        { text: '组件功能与使用', link: '/daily/dumi/comfu' }
+      ]
     }
   ],
   '/tools/': [
