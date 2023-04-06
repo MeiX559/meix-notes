@@ -35,13 +35,18 @@ export const NAV_DATA = [
       {
         icon: 'https://www.67tool.com/avatar.png',
         title: '即时工具',
-        desc: '安全、快捷、好用的在线工具箱~',
+        desc: '快捷、好用的在线工具箱~',
         link: 'https://www.67tool.com/'
       },
       {
         title: '在线工具',
         desc: '在线工具汇总',
         link: 'https://tool.lu'
+      },
+      {
+        title: 'CDN资源',
+        desc: '海量资源CDN',
+        link: 'https://cdnjs.com/'
       }
     ]
   },
