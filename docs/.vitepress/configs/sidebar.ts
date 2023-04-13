@@ -19,7 +19,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: 'TypeScript',
-      collapsed: false,
+      collapsed: true,
       items: [
         { text: 'TypeScript 入门手册', link: '/fe/typeScript/base' },
         // { text: 'TypeScript 泛型', link: '/fe/typeScript/gp' },
@@ -28,7 +28,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: 'CSS 知识概览',
-      collapsed: false,
+      collapsed: true,
       items: [
         { text: 'CSS居中完全指南', link: '/fe/css/middle' },
         { text: 'CSS 文本换行', link: '/fe/css/wrap_text' },
@@ -39,8 +39,16 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       ]
     },
     {
+      text: '前端工程化相关',
+      collapsed: true,
+      items: [
+        { text: 'Prettier', link: '/fe/config/prettier' },
+        { text: 'Tailwind CSS 配置项', link: '/fe/config/tailwind' }
+      ]
+    },
+    {
       text: '浏览器相关',
-      collapsed: false,
+      collapsed: true,
       items: [
         // { text: '浏览器工作原理', link: '/fe/browser/workPrinciple' },
         // { text: '前端缓存指南', link: '/fe/browser/cache' },
@@ -70,6 +78,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'canvas 入门指南', link: '/daily/canvas/canvas' },
         { text: 'canvas API', link: '/daily/canvas/canvasApi' }
       ]
+    },
+    {
+      text: '通用方法总结',
+      link: '/daily/fun/index'
     },
     {
       text: 'SVG',

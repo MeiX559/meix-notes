@@ -70,6 +70,8 @@ npm publish
 
 ## 其他命令
 
+:::details 其他命令
+
 ```sh
 # 查看npm 版本
 npm -v
@@ -97,4 +99,37 @@ npm root
 
 # 查看本地安装的指定包及版本信息，没有显示empty
 npm ls
+```
+
+:::
+
+## npm pkg
+
+```sh
+# 检索key 在package.json文件中定义的值
+npm pkg get [<field>[.<subfield>]]
+
+# 在package.json文件中设置一个值（key:<field>,value: <value>)
+npm pkg set <field> = <value>[.<subfield>=<value>...]
+
+# 在package.json文件中删除一个值(key:<field>)
+npm pkg delete <field>[.<subfield>...]
+```
+
+示例：
+
+```sh
+# 获取当前包名   "meix-notes"
+npm pkg get name
+# 获取scripts.dev的值   "vitepress dev docs --port=8732"
+npm pkg get scripts.dev
+```
+
+修改 package.json 中的 scripts：
+
+```sh
+# dev 命令  给scripts的dev设置一个值
+npm pkg set scripts.dev="vitepress dev docs --port=8732"
+# build 命令  给scripts的build设置一个值
+npm pkg set scripts.build="vitepress build docs"
 ```
