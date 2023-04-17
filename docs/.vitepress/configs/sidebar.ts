@@ -127,6 +127,11 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   ],
   '/sourceCode': [
     {
+      text: 'React相关',
+      collapsed: false,
+      items: [{ text: 'react-use源码阅读', link: '/sourceCode/react/react-use' }]
+    },
+    {
       text: 'omit源码阅读',
       link: '/sourceCode/omit'
     },
