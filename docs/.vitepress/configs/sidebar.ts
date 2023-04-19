@@ -73,6 +73,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       ]
     },
     {
+      text: '前端小知识',
+      link: '/daily/feKnowledge/index'
+    },
+    {
       text: 'canvas 相关',
       collapsed: false,
       items: [
