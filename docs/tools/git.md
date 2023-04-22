@@ -389,4 +389,33 @@ git stash pop
 
 ```
 
+### 本地与远程关联
+
+```sh
+# 远程创建仓库
+
+# 本地初始化仓库
+git init
+
+# 提交本地代码
+git add .
+git commit -m '初始化'
+
+# 与远程仓库建立关联  地址为GitHub仓库地址（如：https://github.com/MeiX559/daily-notes.git）
+git remote add origin https://github.com/xxx.git
+
+# 在本地拉取远程代码
+git pull origin master
+
+# 如果直接使用git pull拉取代码可能会报错，使用如下命令设置一个拉取的分支
+git branch --set-upstream-to=origin/master master
+
+# 如果出现以下错误  fatal: refusing to merge unrelated histories，使用如下命令解决
+git pull origin master --allow-unrelated-histories
+
+# 将本地代码push到远程
+git push origin master
+
+```
+
 参考文档：[阮一峰 -- 常用 Git 命令清单](https://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)
