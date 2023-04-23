@@ -52,3 +52,31 @@ $ npm start
 ```
 
 :::
+
+## 约定式路由
+
+[参考链接](https://d.umijs.org/guide/conventional-routing)
+
+为了使得路由生成更容易理解、更易于控制，dumi 对 Markdown 文档的目录解析做了『文档路由』及『资产路由』的概念拆分。
+
+默认情况下，docs 目录下的 Markdown 文档及.dumi/pages 下的 React 组件会根据目录结构解析为文档路由，src 目录下第一层级的 Markdown 文档会被解析为 /components 下的资产路由，我们可以通过配置项 resolve.atomDirs 对资产路由前缀及解析目录进行更改。
+
+示例：
+| 磁盘路径 | 解析路径 |
+| ------ | -------- |
+| /path/to/.dumi/pages/hello.tsx | - 导航：hello <br /> - 页面路由：/hello |
+| /path/to/docs/guide | - 导航：Guide <br /> - 页面路由：/guide |
+| /path/to/src/Foo/index| - 导航：Foo <br /> - 页面路由：/components/foo |
+
+:::warning 亲测踩坑
+
+对于/path/to/src/Foo/index 的页面路由不能定义成/components/foo/index，或者/components/Foo/index，否则会找不到该页面。
+
+不能识别的文档路径：
+
+- `/path/to/src/hello/world.md`
+- `/path/to/src/hello/another/world.md`
+- 以 . 开头的目录及文档
+- 以 \_ 开头的目录及文档
+
+:::
