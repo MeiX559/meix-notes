@@ -108,7 +108,11 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: 'Git相关',
-      link: '/tools/git'
+      collapsed: false,
+      items: [
+        { text: 'git相关命令', link: '/tools/git/git' },
+        { text: 'git相关原理', link: '/tools/git/principle' }
+      ]
     },
     {
       text: 'JavaScript 常用方法',
