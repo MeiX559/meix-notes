@@ -78,5 +78,6 @@ $ npm start
 - `/path/to/src/hello/another/world.md`
 - 以 . 开头的目录及文档
 - 以 \_ 开头的目录及文档
+- 文档名第二个字母大写
 
 :::
