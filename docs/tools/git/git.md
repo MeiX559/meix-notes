@@ -90,7 +90,7 @@ git remote rm name
 
 ## Git 命令
 
-![git 图解](./images/git_img.jpg)
+![git 图解](../images/git_img.jpg)
 
 ::: tip 专用名词解释
 
