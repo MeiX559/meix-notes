@@ -51,7 +51,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       collapsed: true,
       items: [
         // { text: '浏览器工作原理', link: '/fe/browser/workPrinciple' },
-        // { text: '前端缓存指南', link: '/fe/browser/cache' },
+        { text: '前端缓存指南', link: '/fe/browser/cache' },
         { text: '浏览器监听切屏功能实现', link: '/fe/browser/visibilitychange' }
       ]
     }
