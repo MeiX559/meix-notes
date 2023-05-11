@@ -525,6 +525,21 @@ export const NAV_DATA = [
     ]
   },
   {
+    title: '格式化相关',
+    items: [
+      {
+        title: 'Prettier',
+        desc: 'Prettier',
+        link: 'https://www.prettier.cn/'
+      },
+      {
+        title: 'ESLint',
+        desc: 'ESLint',
+        link: 'https://eslint.org/'
+      }
+    ]
+  },
+  {
     title: '摸摸鱼相关',
     items: [
       {

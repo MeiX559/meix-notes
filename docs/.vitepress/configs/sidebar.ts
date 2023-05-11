@@ -70,6 +70,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: '前端页面截图解决方案', link: '/daily/screenshot' },
         { text: 'base64格式的数据实现原理', link: '/daily/base64' },
         { text: 'Server-Sent Events ', link: '/daily/sse' }
+        // { text: '浅谈Commonjs和Es Module', link: '/daily/module' }
       ]
     },
     {
