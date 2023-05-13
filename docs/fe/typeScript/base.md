@@ -42,6 +42,15 @@ let decLiteral: number = 6 // 十进制
 let hexLiteral: number = 0xf00d // 十六进制
 ```
 
+#### bigint
+
+```js
+const bin: bigint = 0b1010n // 二进制整数
+const oct: bigint = 0o744n // 八进制整数
+const integer: bigint = 10n // 十进制整数
+const hex: bigint = 0xffffffn // 十六进制整数
+```
+
 #### null 和 undefined
 
 默认情况下`null`和`undefined`是所有类型的子类型，可以把`null`和`undefined`赋值给其它任何类型.
@@ -350,6 +359,8 @@ res.split('');  //OK
 
 `enum`用于定义数组集合
 
+#### 数值型枚举
+
 ```js
 // 默认从0开始
 enum Color{Red,Green,Blue}
@@ -366,6 +377,64 @@ let r1:Color1 = Color1.Red
 console.log(c,c1) //2,3
 console.log(r,r1) // 0,1
 ```
+
+:::warning 注意点
+
+```ts
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right
+}
+const direction: Direction = Direction.Down // number 类型可以赋值给枚举类型，不会报错
+console.log(direction) //1
+```
+
+:::
+
+#### 字符串枚举
+
+```ts
+enum Direction {
+  Up = 'up',
+  Down = 'down',
+  Left = 'left',
+  Right = 'right'
+}
+const direction: string = Direction.Down
+const direction1: Direction = Direction.up // string类型可以赋值给枚举类型，不会报错
+
+console.log(direction) // down
+console.log(direction1) //up
+```
+
+#### 异构型枚举
+
+TypeScript 允许在一个枚举中同事定义数值型枚举成员和字符串枚举成员，我们将这种类型的枚举称为异构型枚举。
+
+```ts
+enum Direction {
+  Up,
+  Down = 'down',
+  Left = 3,
+  Right
+}
+const direction: Direction = Direction.Down
+const direction1: Direction = Direction.Up
+console.log(direction, direction1) //down,0
+```
+
+:::warning 注意点
+
+```ts
+enum Direction {
+  Down = 'down',
+  Up //编译错误 ，Enum member must have initializer.即必须为该成员指定一个初始值
+}
+```
+
+:::
 
 ## 类型推断
 
