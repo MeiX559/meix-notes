@@ -100,7 +100,7 @@ str = {}
 
 ### unknown
 
-`unknown`与`any`十分相似，所有类型都可以分配给`unknown`类型.
+`unknown`与`any`十分相似，也是一种顶端类型，所有类型都可以分配给`unknown`类型.
 
 ```js
 let a: unknown = 11
@@ -112,6 +112,8 @@ a = true
 
 - 任何类型的值都可以赋值给 `any`，同时 `any` 类型的值也可以赋值给任何类型（never 除外）。
 - 任何类型的值都可以赋值给 `unknown`，但 `unknown` 类型的值只能赋值给 `unknown` 和 `any。`
+
+unknown 类型是比 any 类型更加安全的顶端类型，因为 unknown 类型只允许赋值给 any 类型和 unknown 类型。
 
 ```js
 let a: unknown = 11
@@ -135,7 +137,7 @@ a.name  // 'a' is of type 'unknown'.
 
 ### never
 
-`never` 类型表示的是那些永不存在的值的类型。
+`never` 类型表示的是那些永不存在的值的类型，是一种尾端类型（不包含任何值）。
 
 值会永不存在的两种情况：
 
@@ -435,6 +437,32 @@ enum Direction {
 ```
 
 :::
+
+#### 枚举成员映射
+
+不论那种类型的枚举，都可以通过枚举成员名去访问枚举成员值。不过有一个例外，对于数值型枚举，不仅可以通过枚举成员名来获取枚举成员值，还可以通过枚举成员值去获取枚举成员名。
+
+```ts
+enum Bool {
+  False = 0,
+  True = 1
+}
+// 通过枚举成员名来获取枚举成员值
+console.log(Bool.False) // 0
+// 通过枚举成员值去获取枚举成员名
+console.log(Bool[Bool.False]) //False
+```
+
+#### 计算枚举成员
+
+```ts
+enum Foo {
+  A = 'Bruce'.length,
+  B = Math.pow(2, 3)
+}
+
+console.log(Foo.A, Foo.B) //5,8
+```
 
 ## 类型推断
 
