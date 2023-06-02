@@ -716,3 +716,115 @@ format('当前时间是属于第q季度')
 | SS        | 00-99   | 毫秒（十），两位数 |
 | SSS       | 000-999 | 毫秒，三位数       |
 | q         | 季度    | 返回 1 ~ 4         |
+
+## 使用 Dayjs 实现倒计时
+
+### react 格式化实现
+
+```tsx
+import { useState, useRef, useCallback, useEffect } from 'react'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
+
+const CountDown = ({ remainTime = 0 }) => {
+  const [timer, setTimer] = useState(['0', '00', '00', '00'])
+  const timerRef = useRef<any>()
+
+  const initTimer = useCallback((t: number) => {
+    setTimer(calcMS(t).split('-'))
+    timerRef.current = setInterval(() => {
+      t -= 1000
+      if (t > 0) {
+        setTimer(calcMS(t).split('-'))
+      } else {
+        setTimer(['0', '00', '00', '00'])
+        clearInterval(timerRef.current)
+      }
+    }, 1000)
+  }, [])
+
+  useEffect(() => {
+    if (remainTime) {
+      initTimer(remainTime)
+    } else {
+      setTimer(['0', '00', '00', '00'])
+    }
+    return () => {
+      clearInterval(timerRef.current)
+    }
+  }, [initTimer, remainTime])
+
+  // const calcMS = (t: number) => {
+  //   // 手动格式化
+  //   // const days = Math.floor(t / (1000 * 60 * 60 * 24)).toString();
+  //   // let hours = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString();
+  //   // let minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)).toString();
+  //   // let seconds = Math.floor((t % (1000 * 60)) / 1000).toString();
+  //   // hours = hours.length < 2 ? `0${hours}` : hours;
+  //   // minutes = minutes.length < 2 ? `0${minutes}` : minutes;
+  //   // seconds = seconds.length < 2 ? `0${seconds}` : seconds;
+
+  //   // 使用dayjs格式化
+  //   const days = dayjs.duration(t).format('D')
+  //   const hours = dayjs.duration(t).format('HH')
+  //   const minutes = dayjs.duration(t).format('mm')
+  //   const seconds = dayjs.duration(t).format('ss')
+  //   return [days, hours, minutes, seconds]
+  // }
+
+  // 传入的t如果是截止时间，使用dayjs.duration(dayjs(t).diff())计算时间差
+  const calcMS = (t: number) => dayjs.duration(t).format('D-HH-mm-ss')
+
+  return (
+    <div>
+      距活动结束<span className="countdown-num">{timer[0]}</span>天
+      <span className="countdown-num">{timer[1]}</span>时
+      <span className="countdown-num">{timer[2]}</span>分
+      <span className="countdown-num">{timer[3]}</span>秒
+    </div>
+  )
+}
+
+export default CountDown
+```
+
+```tsx
+<CountDown remainTime={89098909} />
+```
+
+### vue 格式化实现
+
+```html
+<template>
+  <div class="countdown" v-html="state.count.format(format)"></div>
+
+  <p>{{ state.count.format('D 天 HH 时 mm 分 ss 秒') }}</p>
+  <p>{{ state.count.format('DD : HH : mm : ss') }}</p>
+  <p>{{ state.count.format('HH-mm-ss') }}</p>
+
+  <div class="countdown">
+    使用取值方法：
+    <span>{{ state.count.hours() }}</span>
+    时
+    <span>{{ state.count.minutes() }}</span>
+    分
+    <span>{{ state.count.seconds() }}</span>
+    秒
+    <span>{{ state.count.milliseconds() }}</span>
+  </div>
+
+  <div>
+    距活动结束：<span className="countdown-num">{{ state.timer[0] }}</span>天
+    <span className="countdown-num">{{ state.timer[1] }}</span>时
+    <span className="countdown-num">{{ state.timer[2] }}</span>分
+    <span className="countdown-num">{{ state.timer[3] }}</span>秒
+  </div>
+</template>
+```
+
+<script setup>
+  import CountDown from './countDown.vue'
+</script>
+
+<CountDown />

@@ -1,8 +1,12 @@
 lockfileVersion: 5.4
 
 specifiers:
+  dayjs: ^1.11.7
   vitepress: 1.0.0-alpha.47
   vue: ^3.2.47
+
+dependencies:
+  dayjs: 1.11.7
 
 devDependencies:
   vitepress: 1.0.0-alpha.47_2r467mdhb7mblpaox4bg7fatdi
@@ -541,6 +545,10 @@ packages:
   /csstype/2.6.21:
     resolution: {integrity: sha512-Z1PhmomIfypOpoMjRQB70jfvy/wxT50qW08YXO5lMIJkrdq4yOTR+AW7FqutScmB9NkLwxo+jU+kZLbofZZq/w==}
     dev: true
+
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: false
 
   /esbuild/0.16.17:
     resolution: {integrity: sha512-G8LEkV0XzDMNwXKgM0Jwu3nY3lSTwSGY6XbxM9cr9+s0T/qSV1q1JVPBGzm3dcjhCic9+emZDmMffkwgPeOeLg==}
