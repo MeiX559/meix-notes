@@ -78,6 +78,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       link: '/daily/feKnowledge/index'
     },
     {
+      text: '前端踩坑记录',
+      link: '/daily/pit/index'
+    },
+    {
       text: 'canvas 相关',
       collapsed: false,
       items: [
