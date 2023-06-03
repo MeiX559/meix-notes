@@ -721,7 +721,7 @@ format('当前时间是属于第q季度')
 
 ### react 格式化实现
 
-```tsx
+```js
 import { useState, useRef, useCallback, useEffect } from 'react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -796,31 +796,29 @@ export default CountDown
 ### vue 格式化实现
 
 ```html
-<template>
-  <div class="countdown" v-html="state.count.format(format)"></div>
+<div class="countdown" v-html="state.count.format(format)"></div>
 
-  <p>{{ state.count.format('D 天 HH 时 mm 分 ss 秒') }}</p>
-  <p>{{ state.count.format('DD : HH : mm : ss') }}</p>
-  <p>{{ state.count.format('HH-mm-ss') }}</p>
+<p>{{ state.count.format('D 天 HH 时 mm 分 ss 秒') }}</p>
+<p>{{ state.count.format('DD : HH : mm : ss') }}</p>
+<p>{{ state.count.format('HH-mm-ss') }}</p>
 
-  <div class="countdown">
-    使用取值方法：
-    <span>{{ state.count.hours() }}</span>
-    时
-    <span>{{ state.count.minutes() }}</span>
-    分
-    <span>{{ state.count.seconds() }}</span>
-    秒
-    <span>{{ state.count.milliseconds() }}</span>
-  </div>
+<div class="countdown">
+  使用取值方法：
+  <span>{{ state.count.hours() }}</span>
+  时
+  <span>{{ state.count.minutes() }}</span>
+  分
+  <span>{{ state.count.seconds() }}</span>
+  秒
+  <span>{{ state.count.milliseconds() }}</span>
+</div>
 
-  <div>
-    距活动结束：<span className="countdown-num">{{ state.timer[0] }}</span>天
-    <span className="countdown-num">{{ state.timer[1] }}</span>时
-    <span className="countdown-num">{{ state.timer[2] }}</span>分
-    <span className="countdown-num">{{ state.timer[3] }}</span>秒
-  </div>
-</template>
+<div>
+  距活动结束：<span className="countdown-num">{{ state.timer[0] }}</span>天
+  <span className="countdown-num">{{ state.timer[1] }}</span>时
+  <span className="countdown-num">{{ state.timer[2] }}</span>分
+  <span className="countdown-num">{{ state.timer[3] }}</span>秒
+</div>
 ```
 
 <script setup>
