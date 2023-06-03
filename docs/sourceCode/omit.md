@@ -12,7 +12,7 @@
 
 ## 源码目录
 
-```text
+```js
 |____LICENSE
 |____src                  源代码
 | |____index.js
