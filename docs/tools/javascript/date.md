@@ -717,7 +717,7 @@ format('当前时间是属于第q季度')
 | SSS       | 000-999 | 毫秒，三位数       |
 | q         | 季度    | 返回 1 ~ 4         |
 
-<!-- ## 使用 Dayjs 实现倒计时
+## 使用 Dayjs 实现倒计时
 
 ### react 格式化实现
 
@@ -787,9 +787,9 @@ const CountDown = ({ remainTime = 0 }) => {
 }
 
 export default CountDown
-``` -->
+```
 
-<!-- ```tsx
+```tsx
 <CountDown remainTime={89098909} />
 ```
 
@@ -821,7 +821,7 @@ export default CountDown
 </div>
 ```
 
-<script setup>
+<!-- <script setup>
   import CountDown from './countDown.vue'
 </script>
 
