@@ -19,7 +19,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: 'TypeScript',
-      collapsed: true,
+      collapsed: false,
       items: [
         { text: 'TypeScript 入门手册', link: '/fe/typeScript/base' },
         // { text: 'TypeScript 泛型', link: '/fe/typeScript/gp' },
@@ -38,6 +38,14 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'CSS 预处理器', link: '/fe/css/preprocessor' }
       ]
     },
+    // {
+    //   text: 'React',
+    //   collapsed: false,
+    //   items: [
+    //     { text: '懒加载长页面', link: '/fe/react/index' },
+    //     { text: '自由拖拽组件实现', link: '/fe/react/drag' }
+    //   ]
+    // },
     {
       text: '前端工程化相关',
       collapsed: true,
@@ -48,7 +56,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     },
     {
       text: '浏览器相关',
-      collapsed: true,
+      collapsed: false,
       items: [
         { text: '浏览器工作原理', link: '/fe/browser/workPrinciple' },
         { text: '前端缓存指南', link: '/fe/browser/cache' },
@@ -71,6 +79,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'base64格式的数据实现原理', link: '/daily/base64' },
         { text: 'Server-Sent Events ', link: '/daily/sse' },
         { text: '浅谈Commonjs和Es Module', link: '/daily/module' }
+        // { text: '视频播放器库', link: '/daily/video' }
       ]
     },
     {
@@ -116,7 +125,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       collapsed: false,
       items: [
         { text: 'git相关命令', link: '/tools/git/git' },
-        { text: 'git相关原理', link: '/tools/git/principle' }
+        // { text: 'git相关原理', link: '/tools/git/principle' }
+        { text: '浅谈git底层原理', link: '/tools/git/underPrinciple' }
       ]
     },
     {
