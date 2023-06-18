@@ -9,9 +9,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: '数据类型', link: '/fe/javascript/types/index' },
         // { text: '声明变量', link: '/fe/javascript/variables/index' },
         { text: '类型转换', link: '/fe/javascript/conversions/index' },
+        { text: '作用域', link: '/fe/javascript/scope/index' },
         { text: '原型与原型链', link: '/fe/javascript/prototype/index' },
+        { text: '继承', link: '/fe/javascript/inherit/index' }
         // { text: '函数', link: '/fe/javascript/fun/index' },
-        { text: '作用域', link: '/fe/javascript/scope/index' }
       ]
     },
     {
