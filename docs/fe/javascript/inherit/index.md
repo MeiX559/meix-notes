@@ -177,6 +177,8 @@ instance2.sayAge() // 18
 
 :::tip 原型式继承
 原型式继承的基本思想就是利用一个空对象作为中介，将某个对象直接赋值给空对象构造函数的原型。
+
+ES5 Object.create 的模拟实现，将传入的对象作为创建的对象的原型。
 :::
 
 ```js
@@ -237,7 +239,170 @@ console.log(person.friends) //['Shelby', 'Court', 'Van', 'Rob', 'Barbie']
 
 ## 寄生式继承
 
+:::tip 寄生式继承
+寄生式继承是在原型式继承的基础上，创建一个仅用于封装继承过程的函数，该函数在内部以某种方式来增强对象，最后再像真的它做了所有工作一样返回对象。
+
+简单理解就是在内部以某种方式增强对象，最后返回对象。
+:::
+
+```js
+function createAnother(original) {
+  var clone = object(original) // 通过调用 object() 函数创建一个新对象
+  clone.sayHi = function () {
+    // 以某种方式来增强对象
+    console.log('hi')
+  }
+  return clone // 返回这个对象
+}
+```
+
+使用 createAnother()函数：
+
+```js
+const person = {
+  name: 'Nicholas',
+  friends: ['Shelby', 'Court', 'Van']
+}
+const anotherPerson = createAnother(person)
+anotherPerson.sayHi() //"hi"
+```
+
+上述例子中，基于 person 返回了一个新对象 anotherPerson，这个对象不仅有 person 的属性和方法，还有自己的属性和方法。
+
+:::warning 缺点
+
+- 函数无法复用而降低效率（因为使用对象来为其添加方法）
+- 无法传递参数
+- 每次创建对象都会创建一遍方法
+  :::
+
 ## 寄生组合式继承
+
+:::tip 寄生组合式继承
+寄生组合式继承是通过借用构造函数来继承属性，通过原型链的混成形式来继承方法。本质上，就是使用寄生式继承来继承父类型的原型，然后再将结果指定给子类型的原型。
+
+优点：只调用一次父类构造函数，并且因此避免了在父类原型上面创建不必要的、多余的属性。与此同时原型链还能保持不变；因此还能够正常使用 `instanceof` 和 `isPrototypeOf`
+:::
+
+```js
+function inheritPrototype(subType, superType) {
+  var prototype = Object.create(superType.prototype) // 创建对象，创建父类原型的一个副本
+  prototype.constructor = subType // 增强对象，弥补因重写原型而失去的默认的constructor 属性
+  subType.prototype = prototype // 指定对象，将新创建的对象赋值给子类的原型
+}
+
+// 父类初始化实例属性和原型属性
+function SuperType(name) {
+  this.name = name
+  this.colors = ['red', 'blue', 'green']
+}
+SuperType.prototype.sayName = function () {
+  alert(this.name)
+}
+
+// 借用构造函数传递增强子类实例属性（支持传参和避免篡改）
+function SubType(name, age) {
+  SuperType.call(this, name)
+  this.age = age
+}
+
+// 将父类原型指向子类
+inheritPrototype(SubType, SuperType)
+
+// 新增子类原型属性
+SubType.prototype.sayAge = function () {
+  alert(this.age)
+}
+
+var instance1 = new SubType('xyc', 23)
+var instance2 = new SubType('lxy', 23)
+
+instance1.colors.push('2') // ["red", "blue", "green", "2"]
+instance2.colors.push('3') // ["red", "blue", "green", "3"]
+```
+
+:::tip
+这是最成熟的方法，也是现在库实现的方法
+:::
+
+## ES6 类继承 extends
+
+`ES6`引入了 class 关键字，使得开发者可以更方便的使用面向对象的方式编写代码。`ES6`的 class 可以看作是一个语法糖，它的绝大部分功能`ES5`都可以做到，新的 class 写法只是让对象原型的写法更加清晰、更像面向对象编程的语法。
+
+:::tip ES6 类继承 extends
+class 可以通过 extends 关键字实现继承，在类声明或类表达式中，创建一个类，让子类继承父类的属性和方法。
+:::
+
+```js
+class Rectangle {
+  constructor(width, height) {
+    this.width = width
+    this.height = height
+  }
+
+  get area() {
+    return this.width * this.height
+  }
+
+  calcArea() {
+    return this.width * this.height
+  }
+}
+
+const rectangle = new Rectangle(10, 10)
+console.log(rectangle.area) // 100
+console.log(rectangle.calcArea()) // 100
+
+// 继承
+class Square extends Rectangle {
+  constructor(length) {
+    super(length, length)
+    this.name = 'Square'
+  }
+  get area() {
+    return this.width * this.height
+  }
+}
+
+const square = new Square(10)
+console.log(square.area) // 100
+console.log(square.calcArea()) // 100
+```
+
+extends 继承的核心代码如下所示，它和寄生组合式继承方式一样：
+
+```js
+function _inherits(subType, superType) {
+  // 创建对象，创建父类原型的一个副本
+  // 增强对象，弥补因重写原型而失去的默认的constructor 属性
+  // 指定对象，将新创建的对象赋值给子类的原型
+  subType.prototype = Object.create(superType && superType.prototype, {
+    constructor: {
+      value: subType,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  })
+
+  if (superType) {
+    Object.setPrototypeOf
+      ? Object.setPrototypeOf(subType, superType)
+      : (subType.__proto__ = superType)
+  }
+}
+```
+
+## 总结
+
+- `ECMAScript`无法只支持实现继承，且其实现继承主要依靠原型链实现的。
+- **原型链继承**：原型链继承的本质就是复制，即重写原型对象，代之以一个新类型的实例。
+- **借用构造函数继承**：在子类型构造函数的内部调用父类型构造函数（等同于复制父类的实例给子类），而不使用原型。
+- **组合继承**：使用原型链实现对原型属性和方法的继承，通过借用构造函数继承来实现对实例属性的继承。
+- **原型式继承**：利用一个空对象作为中介，将某个对象直接赋值给空对象构造函数的原型。
+- **寄生式继承**：在内部以某种方式增强对象，最后返回对象。
+- **寄生组合式继承**：通过借用构造函数来继承属性，通过原型链的混成形式来继承方法。本质上，就是使用寄生式继承来继承父类型的原型，然后再将结果指定给子类型的原型。
+- **ES6 类继承 extends**：class 可以通过 extends 关键字实现继承，在类声明或类表达式中，创建一个类，让子类继承父类的属性和方法。
 
 ## 参考文档及书籍
 
