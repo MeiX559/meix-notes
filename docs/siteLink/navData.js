@@ -447,6 +447,16 @@ export const NAV_DATA = [
         link: 'https://threejs.org'
       },
       {
+        title: 'React- Three-Fiber',
+        desc: 'Three.js 的 React 渲染器',
+        link: 'https://github.com/pmndrs/react-three-fiber'
+      },
+      {
+        title: 'Three.js',
+        desc: 'Three.js在线演示',
+        link: 'https://threejs.org/editor/'
+      },
+      {
         icon: 'https://pic2.zhimg.com/v2-0157417242d6048cf7603920e95ac398_250x0.jpg?source=172ae18b',
         title: 'WebGl',
         desc: 'WebGl入门基础教程',

@@ -102,6 +102,14 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       ]
     },
     {
+      text: 'Three.js 相关',
+      collapsed: false,
+      items: [
+        { text: 'Three.js理论知识', link: '/daily/three/index' }
+        // { text: 'Three.js实践', link: '/daily/three/three' }
+      ]
+    },
+    {
       text: '通用方法总结',
       link: '/daily/fun/index'
     },
