@@ -355,7 +355,7 @@ export const NAV_DATA = [
         // icon: 'https://www.rollupjs.com/img/favicon.png',
         title: 'Rollup',
         desc: 'Rollup 是一个 JavaScript 模块打包器',
-        link: 'https://www.rollupjs.com'
+        link: 'https://rollupjs.org'
       },
       {
         // icon: 'https://turbo.build/images/favicon-dark/apple-touch-icon.png',
