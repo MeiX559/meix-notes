@@ -27,13 +27,13 @@ export const NAV_DATA = [
         link: 'https://www.iconfont.cn/'
       },
       {
-        icon: 'https://www.processon.com/assets/images/logo_small.svg',
+        // icon: 'https://www.processon.com/assets/images/logo_small.svg',
         title: 'processon',
         desc: '免费在线流程图思维导图',
         link: 'https://www.processon.com/'
       },
       {
-        icon: 'https://www.67tool.com/avatar.png',
+        // icon: 'https://www.67tool.com/avatar.png',
         title: '即时工具',
         desc: '快捷、好用的在线工具箱~',
         link: 'https://www.67tool.com/'
@@ -234,31 +234,31 @@ export const NAV_DATA = [
     title: '小程序相关',
     items: [
       {
-        icon: 'https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png',
+        // icon: 'https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png',
         title: '微信小程序文档',
         desc: '微信小程序官方开发者文档',
         link: 'https://developers.weixin.qq.com/miniprogram/dev/framework/'
       },
       {
-        icon: 'https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png',
+        // icon: 'https://res.wx.qq.com/a/wx_fed/assets/res/OTE0YTAw.png',
         title: '微信小程序后台',
         desc: '微信小程序官方开发者后台',
         link: 'https://mp.weixin.qq.com/wxamp/wacodepage/getcodepage?token=1132642653&lang=zh_CN'
       },
       {
-        icon: 'https://cdn.docschina.org/home/logo/taro.png',
+        // icon: 'https://cdn.docschina.org/home/logo/taro.png',
         title: 'Taro',
         desc: '多端统一开发解决方案',
         link: 'https://taro.jd.com'
       },
       {
-        icon: 'https://web-assets.dcloud.net.cn/unidoc/zh/icon.png',
+        // icon: 'https://web-assets.dcloud.net.cn/unidoc/zh/icon.png',
         title: 'uni-app',
         desc: '一个使用 Vue.js 的多端统一开发解决方案',
         link: 'https://uniapp.dcloud.net.cn'
       },
       {
-        icon: 'https://mpxjs.cn/favicon.ico',
+        // icon: 'https://mpxjs.cn/favicon.ico',
         title: 'Mpx',
         desc: '增强型跨端小程序框架',
         link: 'https://mpxjs.cn'
@@ -269,19 +269,19 @@ export const NAV_DATA = [
     title: 'Node 相关',
     items: [
       {
-        icon: 'https://nodejs.org/static/images/logo.svg',
+        // icon: 'https://nodejs.org/static/images/logo.svg',
         title: 'Node.js',
         desc: '一个基于 Chrome V8 引擎的 JavaScript 运行环境',
         link: 'https://nodejs.org/zh-cn'
       },
       {
-        icon: 'https://d33wubrfki0l68.cloudfront.net/e937e774cbbe23635999615ad5d7732decad182a/26072/logo-small.ede75a6b.svg',
+        // icon: 'https://d33wubrfki0l68.cloudfront.net/e937e774cbbe23635999615ad5d7732decad182a/26072/logo-small.ede75a6b.svg',
         title: 'Nest.js 中文文档',
         desc: '用于构建高效且可伸缩的服务端应用程序的渐进式 Node.js 框架',
         link: 'https://docs.nestjs.cn'
       },
       {
-        icon: 'https://static.oschina.net/uploads/img/201804/27094215_z2WI.jpg',
+        // icon: 'https://static.oschina.net/uploads/img/201804/27094215_z2WI.jpg',
         title: 'Koa',
         desc: '基于 Node.js 平台的下一代 web 开发框架',
         link: 'https://koa.bootcss.com/#'
@@ -303,7 +303,7 @@ export const NAV_DATA = [
     items: [
       {
         title: 'Svelte',
-        desc: '将声明性组件转换为精准高效更新 DOM 的 JavaScript 代码',
+        desc: '一个用于构建高性能的Web应用程序',
         link: 'https://svelte.dev'
       },
       {
@@ -317,19 +317,19 @@ export const NAV_DATA = [
     title: 'CSS 相关',
     items: [
       {
-        icon: 'https://postcss.org/assets/logo-3e39b0aa.svg',
+        // icon: 'https://postcss.org/assets/logo-3e39b0aa.svg',
         title: 'PostCSS',
         desc: '一个用 JavaScript 转换 CSS 的工具',
         link: 'https://postcss.org'
       },
       {
-        icon: 'https://sass-lang.com/assets/img/logos/logo-b6e1ef6e.svg',
+        // icon: 'https://sass-lang.com/assets/img/logos/logo-b6e1ef6e.svg',
         title: 'Sass',
         desc: '一个成熟，稳定，功能强大的专业级 CSS 扩展语言',
         link: 'https://sass-lang.com'
       },
       {
-        icon: 'https://www.tailwindcss.cn/apple-touch-icon.png',
+        // icon: 'https://www.tailwindcss.cn/apple-touch-icon.png',
         title: 'TailwindCSS 中文网',
         desc: '一个功能类优先的 CSS 框架',
         link: 'https://www.tailwindcss.cn'
@@ -340,75 +340,75 @@ export const NAV_DATA = [
     title: '打包编译相关',
     items: [
       {
-        icon: 'https://www.webpackjs.com/icon_180x180.png',
+        // icon: 'https://www.webpackjs.com/icon_180x180.png',
         title: 'Webpack 中文网',
         desc: '一个用于现代 JavaScript 应用程序的静态模块打包工具',
         link: 'https://www.webpackjs.com'
       },
       {
-        icon: 'https://cn.vitejs.dev/logo.svg',
+        // icon: 'https://cn.vitejs.dev/logo.svg',
         title: 'Vite 中文文档',
         desc: '下一代前端工具链',
         link: 'https://cn.vitejs.dev'
       },
       {
-        icon: 'https://www.rollupjs.com/img/favicon.png',
+        // icon: 'https://www.rollupjs.com/img/favicon.png',
         title: 'Rollup',
         desc: 'Rollup 是一个 JavaScript 模块打包器',
         link: 'https://www.rollupjs.com'
       },
       {
-        icon: 'https://turbo.build/images/favicon-dark/apple-touch-icon.png',
+        // icon: 'https://turbo.build/images/favicon-dark/apple-touch-icon.png',
         title: 'Turbo',
-        desc: 'Turbo is an incremental bundler and build system optimized for JavaScript and TypeScript, written in Rust',
+        desc: 'Turbo是一个用于加速Web应用程序的库。',
         link: 'https://turbo.build'
       },
       {
-        icon: 'https://www.babeljs.cn/img/favicon.png',
+        // icon: 'https://www.babeljs.cn/img/favicon.png',
         title: 'Babel',
         desc: 'Babel 是一个 JavaScript 编译器',
         link: 'https://www.babeljs.cn'
       },
       {
-        icon: 'https://esbuild.github.io/favicon.svg',
+        // icon: 'https://esbuild.github.io/favicon.svg',
         title: 'esbuild',
         desc: 'An extremely fast bundler for the web',
         link: 'https://esbuild.github.io'
       },
       {
-        icon: 'https://swc.rs/favicon/apple-touch-icon.png',
+        // icon: 'https://swc.rs/favicon/apple-touch-icon.png',
         title: 'SWC',
         desc: 'Rust-based platform for the Web',
         link: 'https://swc.rs'
       },
       {
-        icon: 'https://cn.vuejs.org/logo.svg',
+        // icon: 'https://cn.vuejs.org/logo.svg',
         title: 'VitePress',
         desc: '由 Vite 和 Vue 驱动的静态网站生成器',
         link: 'https://vitepress.vuejs.org'
       },
       {
-        icon: 'https://cn.vuejs.org/logo.svg',
+        // icon: 'https://cn.vuejs.org/logo.svg',
         title: 'VuePress',
         desc: 'Vue 驱动的静态网站生成器',
         link: 'https://vuepress.vuejs.org/zh'
       },
       {
-        icon: 'https://gw.alipayobjects.com/zos/bmw-prod/d3e3eb39-1cd7-4aa5-827c-877deced6b7e/lalxt4g3_w256_h256.png',
+        // icon: 'https://gw.alipayobjects.com/zos/bmw-prod/d3e3eb39-1cd7-4aa5-827c-877deced6b7e/lalxt4g3_w256_h256.png',
         title: 'dumi',
         desc: '基于 Umi 为组件研发而生的静态站点框架',
         link: 'https://d.umijs.org'
       },
       {
-        icon: 'https://d33wubrfki0l68.cloudfront.net/c088b7acfcf11100903c44fe44f2f2d7e0f30531/a52f4/zh-cn/img/docusaurus.svg',
+        // icon: 'https://d33wubrfki0l68.cloudfront.net/c088b7acfcf11100903c44fe44f2f2d7e0f30531/a52f4/zh-cn/img/docusaurus.svg',
         title: 'Docusaurus',
         desc: '基于 React 的静态网站生成器',
         link: 'https://docusaurus.io/zh-CN/'
       },
       {
-        icon: 'https://i0.wp.com/softwareengineeringdaily.com/wp-content/uploads/2018/10/netlify.png?resize=730,389&ssl=1',
+        // icon: 'https://i0.wp.com/softwareengineeringdaily.com/wp-content/uploads/2018/10/netlify.png?resize=730,389&ssl=1',
         title: 'Netlify',
-        desc: '使用任何前端框架从 Git 构建、预览和部署到我们的全球网络。',
+        desc: '一个现代化的静态网站托管平台',
         link: 'https://app.netlify.com/'
       }
     ]
@@ -417,31 +417,31 @@ export const NAV_DATA = [
     title: '可视化相关',
     items: [
       {
-        icon: 'https://echarts.apache.org/zh/images/favicon.png',
+        // icon: 'https://echarts.apache.org/zh/images/favicon.png',
         title: 'ECharts',
         desc: '一个基于 JavaScript 的开源可视化图表库',
         link: 'https://echarts.apache.org/zh/index.html'
       },
       {
-        icon: 'https://antv.vision/icons/icon-72x72.png',
+        // icon: 'https://antv.vision/icons/icon-72x72.png',
         title: 'AntV',
-        desc: '蚂蚁集团全新一代数据可视化解决方案，致力于提供一套简单方便、专业可靠、无限可能的数据可视化最佳实践。',
+        desc: '蚂蚁集团全新一代数据可视化解决方案。',
         link: 'https://antv.vision/zh/'
       },
       {
-        icon: 'https://d3js.org/favicon.png',
+        // icon: 'https://d3js.org/favicon.png',
         title: 'D3.js',
         desc: '一个遵循 Web 标准用于可视化数据的 JavaScript 库',
         link: 'https://d3js.org'
       },
       {
-        icon: 'https://www.chartjs.org/favicon.ico',
+        // icon: 'https://www.chartjs.org/favicon.ico',
         title: 'Chart.js',
         desc: '一个简单而灵活的 JavaScript 图表库',
         link: 'https://www.chartjs.org'
       },
       {
-        icon: 'https://threejs.org/files/favicon.ico',
+        // icon: 'https://threejs.org/files/favicon.ico',
         title: 'Three.js',
         desc: 'JavaScript 3d 库',
         link: 'https://threejs.org'
@@ -457,7 +457,7 @@ export const NAV_DATA = [
         link: 'https://threejs.org/editor/'
       },
       {
-        icon: 'https://pic2.zhimg.com/v2-0157417242d6048cf7603920e95ac398_250x0.jpg?source=172ae18b',
+        // icon: 'https://pic2.zhimg.com/v2-0157417242d6048cf7603920e95ac398_250x0.jpg?source=172ae18b',
         title: 'WebGl',
         desc: 'WebGl入门基础教程',
         link: 'http://www.yanhuangxueyuan.com/WebGL/'
@@ -550,18 +550,18 @@ export const NAV_DATA = [
     ]
   },
   {
-    title: '摸摸鱼相关',
+    title: '其他',
     items: [
       {
         title: 'ChatGPT',
         desc: 'ChatGPT官网',
         link: 'https://chat.openai.com/'
-      },
-      {
-        title: 'ChatGPT',
-        desc: '不需key的ChatGPT',
-        link: 'https://chatgptproxy.me/index.html#/'
       }
+      // {
+      //   title: 'ChatGPT',
+      //   desc: '不需key的ChatGPT',
+      //   link: 'https://chatgptproxy.me/index.html#/'
+      // }
     ]
   }
 ]

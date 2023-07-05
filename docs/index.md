@@ -15,7 +15,7 @@ hero:
       link: /tools/online-tools
       theme: alt
     - text: 站点导航
-      link: /siteLink
+      link: /siteLink/index
       theme: alt
 features:
   - title: 前端知识
