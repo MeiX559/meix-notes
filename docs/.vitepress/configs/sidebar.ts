@@ -94,10 +94,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       text: '前端踩坑记录',
       link: '/daily/pit/index'
     },
-    // {
-    //   text: '桌面应用开发',
-    //   link: '/daily/electron/index'
-    // },
+    {
+      text: '桌面应用开发',
+      link: '/daily/electron/index'
+    },
     // {
     //   text: '打包编译相关',
     //   collapsed: false,
