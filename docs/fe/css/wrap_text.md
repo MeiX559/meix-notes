@@ -1,5 +1,50 @@
 # CSS 文本换行
 
+## 单行文本溢出省略号
+
+```css
+/* 需要指定宽度 */
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+word-break: break-all;
+```
+
+## 多行文本溢出省略号
+
+```css
+/* 需要指定宽度 */
+overflow: hidden;
+text-overflow: ellipsis;
+display: -webkit-box;
+word-break: break-all;
+-webkit-line-clamp: 2; /*需要显示的行数*/
+-webkit-box-orient: vertical;
+```
+
+图标和标题(两行展示，溢出省略号显示)
+
+```jsx
+<div className="r-title">
+  <img className="icon-tag" src={`****.png`} />
+  <p className="title txt-cut">{goods.itemTitle}</p>
+</div>
+```
+
+```css
+.txt-cut {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-break: break-all;
+  -webkit-line-clamp: 2; /*需要显示的行数*/
+  -webkit-box-orient: vertical;
+}
+.title {
+  text-indent: 1.125rem; /*设置标题首行缩进*/
+}
+```
+
 来研究一下 `CSS` 中的文本换行。正常情况下，在固定宽度的盒子中的中文会自动换行。但是，当遇到非常长的英文单词或者很长的 URL 时，文本可能就不会自动换行，而会溢出所在容器。幸运的是，`CSS` 提供了一些和文本换行相关的属性；
 
 - overflow-wrap
