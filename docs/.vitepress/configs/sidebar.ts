@@ -39,7 +39,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: 'mask 属性介绍', link: '/fe/css/mask' },
         { text: 'CSS 预处理器', link: '/fe/css/preprocessor' },
         { text: 'revert-layer全局关键字', link: '/fe/css/revert-layer' },
-        { text: 'CSS炫酷效果', link: '/fe/css/special-effects' }
+        { text: 'CSS炫酷效果', link: '/fe/css/special-effects' },
+        { text: 'CSS揭秘', link: '/fe/css/know-css' }
       ]
     },
     // {
