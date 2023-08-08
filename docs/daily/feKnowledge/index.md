@@ -55,3 +55,80 @@ const name = ''
 console.log(name || 'yd') // yd;
 console.log(name ?? 'yd') // '';
 ```
+
+## JS 判断文字是否溢出（即是否存在...）
+
+:::details 判断文字是否溢出
+
+```jsx
+import { useEffect, useState } from 'react'
+
+const [result, setResult] = useState()
+
+useEffect(() => {
+  const box = document.querySelector('.box')
+
+  const getPadding = (el) => {
+    const style = window.getComputedStyle(el, null)
+    const paddingLeft = Number.parseInt(style.paddingLeft, 10) || 0
+    const paddingRight = Number.parseInt(style.paddingRight, 10) || 0
+    const paddingTop = Number.parseInt(style.paddingTop, 10) || 0
+    const paddingBottom = Number.parseInt(style.paddingBottom, 10) || 0
+    return {
+      pLeft: paddingLeft,
+      pRight: paddingRight,
+      pTop: paddingTop,
+      pBottom: paddingBottom
+    }
+  }
+
+  const checkEllipsis = () => {
+    const range = document.createRange()
+    range.setStart(box, 0)
+    range.setEnd(box, box.childNodes.length)
+    window.getSelection().addRange(range)
+    const rangeWidth = range.getBoundingClientRect().width
+    const rangeHeight = range.getBoundingClientRect().height
+    const { pLeft, pRight, pTop, pBottom } = getPadding(box)
+    const horizontalPadding = pLeft + pRight
+    const verticalPadding = pTop + pBottom
+    if (
+      rangeWidth + horizontalPadding > box.offsetWidth ||
+      rangeHeight + verticalPadding > box.offsetHeight ||
+      range.scrollWidth > box.offsetWidth
+    ) {
+      setResult('存在省略号')
+    } else {
+      setResult('容器宽度足够，没有省略号了')
+    }
+  }
+
+  checkEllipsis()
+}, [])
+
+return (
+  <>
+    <div className="ellipsis box">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+    <div>计算结果：{result}</div>
+  </>
+)
+```
+
+:::
+
+```css
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.box {
+  border: 1px solid gray;
+  padding: 10px;
+  width: 300px;
+}
+```
+
+![文本超出省略](../images/fe-know1.png)
+![文本未超出](../images/fe-know2.png)
