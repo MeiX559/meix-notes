@@ -12,7 +12,8 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         { text: '作用域', link: '/fe/javascript/scope/index' },
         { text: '原型与原型链', link: '/fe/javascript/prototype/index' },
         { text: '继承', link: '/fe/javascript/inherit/index' },
-        { text: 'JavaScript事件', link: '/fe/javascript/index' }
+        { text: 'JavaScript事件', link: '/fe/javascript/index' },
+        { text: 'JavaScript API', link: '/fe/javascript/api' }
         // { text: '函数', link: '/fe/javascript/fun/index' },
       ]
     },

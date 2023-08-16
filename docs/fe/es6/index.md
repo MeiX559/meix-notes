@@ -674,9 +674,9 @@ s.has(2) // false
 
 ### WeakSet
 
-`WeakSet` 结构与 Set 类似，也是不重复的值的集合，但是，它与 Set 有两个区别：
+`WeakSet` 结构与 Set 类似，也是不重复的值的集合，但是，它与 Set 有以下区别：
 
-1. `WeakSet` 的成员只能是对象，而不能是其他类型的值。
+- `WeakSet` 的成员只能是对象，而不能是其他类型的值。若调用 add 方法传入了非对象的参数，就会抛出错误(has 和 delete 方法在传入了非对象参数时会返回 false)
 
 ```js
 const ws = new WeakSet()
@@ -686,9 +686,15 @@ ws.add(1) // TypeError: Invalid value used in weak set
 ws.add(Symbol()) //  TypeError: Invalid value used in weak set
 ```
 
-2. `WeakSet` 中的对象都是弱引用，即垃圾回收机制不考虑 `WeakSet` 对该对象的引用。如果其他对象都不在引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于 `WeakSet` 中。
-   `WeakSet` 适合临时存放一组对象，以及存放跟对象绑定的信息，只要这些对象在外部消失，它在 `WeakSet` 里面的引用就会自动消失。`ES6` 规定 `WeakSet` 不可变量。
-   `WeakSet` 是一个构造函数，可以使用 new 命令创建 `WeakSet` 数据结构。作为构造函数，`WeakSet` 可以接受一个数组或类似数组的对象作为参数。（实际上，任何具有 `Iterable` 接口的对象，都可以作为 `WeakSet` 的参数）该数组的所有成员，都会自动成为 `WeakSet` 实例对象的成员。
+- `WeakSet` 中的对象都是弱引用，即垃圾回收机制不考虑 `WeakSet` 对该对象的引用。如果其他对象都不在引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于 `WeakSet` 中。
+- `WeakSet` 没有 size 属性
+- `WeakSet`没有办法遍历它的成员(即没有 forEach()方法)。`WeakSet` 不能遍历是因为它的成员都是弱引用，随时可能消失，遍历机制无法保证成员的存在，很可能刚刚遍历结束成员就取不到了。
+- `WeakSet`不可迭代，因此不能被用在`for-of`循环中
+- `WeakSet`无法暴露出任何迭代器(例如 keys()与 values()方法)，因此没有任何编程手段可用于判断 Weak Set 的内容。
+
+`WeakSet` 适合临时存放一组对象，以及存放跟对象绑定的信息，只要这些对象在外部消失，它在 `WeakSet` 里面的引用就会自动消失。`ES6` 规定 `WeakSet` 不可变量。
+
+`WeakSet` 是一个构造函数，可以使用 new 命令创建 `WeakSet` 数据结构。作为构造函数，`WeakSet` 可以接受一个数组或类似数组的对象作为参数。（实际上，任何具有 `Iterable` 接口的对象，都可以作为 `WeakSet` 的参数）该数组的所有成员，都会自动成为 `WeakSet` 实例对象的成员。
 
 ```js
 const a = [
@@ -704,13 +710,13 @@ const ws1 = new WeakSet(b)
 ```
 
 上述代码中，a 是一个数组，它有两个成员，都是数组，将 a 作为 `WeakSet` 构造函数的参数，a 的成员会自动成为 WeakSet 的成员。注意，是 a 数组的成员成为 WeakSet 的成员，而不是 a 数组本身，这意味着，数组的成员只能是对象。如果数组的成员不是对象，加入 WeakSet 就会报错。
+
 WeakSet 结构有以下三个方法。
 
 - **WeakSet.prototype.add(value)**：向 WeakSet 实例添加一个新成员。
 - **WeakSet.prototype.delete(value)**：清除 WeakSet 实例的指定成员。
 - **WeakSet.prototype.has(value)**：返回一个布尔值，表示某个值是否在 WeakSet 实例之中。
 
-`WeakSet` 没有 size 属性，没有办法遍历它的成员。`WeakSet` 不能遍历是因为它的成员都是弱引用，随时可能消失，遍历机制无法保证成员的存在，很可能刚刚遍历结束成员就取不到了。
 `WeakSet` 的一个用处是存储 DOM 节点，而不用担心这些节点从文档移除时，会引发内存泄漏。
 
 ### Map
@@ -811,7 +817,7 @@ strMapToObj(myMap)
 
 ### WeakMap
 
-`WeakMap` 结构与 `Map` 结构类似，也是用于生成键值对的集合。
+`WeakMap` 结构与 `Map` 结构类似，也是用于生成键值对的集合，其中键必须是非空的对象，值则允许时任意类型。
 
 :::tip `WeakMap` 与 `Map` 的区别
 
@@ -897,6 +903,10 @@ iter.next() // { value: undefined, done: true }
 ```
 
 ### Generator
+
+生成器是一种特殊类型的函数，但是它和标准的普通函数完全不同，生成器函数能生成一组值的序列，不过每个值的生成是基于每次请求，不同于标准函数那样立即生成。需要显示地向生成器请求一个新的值，随后生成器要么响应一个新生成的值，要么告诉我们它之后都不会再生成新值。
+
+调用生成器并不会执行生成器函数，相反，它会创建一个叫作迭代器的对象，通过创建迭代器对象可以与生成器通信。
 
 ## Proxy 和 Reflect
 
