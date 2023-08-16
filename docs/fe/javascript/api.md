@@ -121,3 +121,144 @@ navigator.clipboard
 - 在使用 Clipboard 接口时，需要获取用户的授权。
 - 在处理剪贴板数据时，需要注意数据的类型。
   :::
+
+## Intersection Observer API
+
+`Intersection Observer API` 提供了一种异步检测目标元素与视窗相交情况变化的方法。它可以告诉开发者一个元素是否进入视窗，以及两者的交叉区域大小和位置。`Intersection Observer API`可以通过回调函数及设定的阈值实时通知开发者目标元素与视窗的交叉状态，从而进行相应的操作。
+
+:::tip Intersection Observer API 特性
+
+- 异步执行：它使用浏览器的内部优化机制，不会阻塞主进程，避免了早期调用 getBoundingClientRect(在主线程上运行)可能会造成的性能问题。
+- 节省资源：滚动事件或定时器都需要频繁计算与回调触发，而 IntersectionObserver 可以精确观察元素的视窗的交叉状态，可以节省一定的资源。
+- 观察多个目标：IntersectionObserver 可以同时观察多个目标元素。
+- 自定义阈值：可设定一个或多个阈值，用来定义元素与视窗的交叉比例。
+  :::
+
+### IntersectionObserver 的使用
+
+创建一个 IntersectionObserver 对象，并传入相应参数和回调函数，该回调函数将会在目标元素与根元素的交集大小超过阈值规定的大小时候执行。
+
+```js
+let options = {
+  root: document.querySelector('#scrollArea'),
+  rootMargin: '0px',
+  threshold: 1.0 // 阈值为 1.0 意味着目标元素完全出现在 root 选项指定的元素中可见时，回调函数将会被执行
+}
+
+let observer = new IntersectionObserver(callback, options)
+```
+
+**实例属性：**
+
+- root:测试交叉时，用作边界盒的元素或文档。如果构造函数未传入 root 或其值为 null，则默认使用顶级文档的视口。
+- rootMargin：计算交叉时添加到根边界盒的矩形偏移量。
+- threshold：阈值，监听对象的交叉区域与边界区域的比率。如果构造器未传入值，则默认值为 0。
+
+**实例方法：**
+
+- disconnect:使 IntersectionObserver 对象停止监听目标。
+- observe:使 IntersectionObserver 开始监听一个目标元素。
+- takeRecords:返回所有观察目标的 IntersectionObserverEntry 对象数组。
+- unobserve:使 IntersectionObserver 停止监听特定目标元素。
+
+### IntersectionObserver 的应用
+
+#### 图片懒加载
+
+通过使用 IntersectionObserver，可以设置只在进入视窗时才开始加载，这样可以减少页面初始化时的加载时间。
+
+```js
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const img = entry.target
+      img.src = img.dataset.src // 将真实的图片地址赋给 src 属性
+      observer.unobserve(img) // 停止观察该图片
+    }
+  })
+})
+
+const lazyImages = document.querySelectorAll('.lazy-image')
+lazyImages.forEach((img) => {
+  observer.observe(img) // 开始观察每个图片元素
+})
+```
+
+#### 无限滚动加载
+
+传统的无限滚动加载通常是使用滚动事件来触发数据的加载，但是这种方式需要频繁计算，会导致一定的性能问题，而 IntersectionObserver 可以更加高效地实现无限滚动加载。
+
+```js
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      loadMoreData() // 触发数据加载操作
+    }
+  })
+})
+
+const loader = document.querySelector('.loader')
+observer.observe(loader) // 开始观察加载指示器元素
+```
+
+#### 曝光埋点
+
+IntersectionObserver 提供了一个可靠且高效的方式来实现有效曝光埋点。通过观察目标元素与视窗的交叉状态，可以确定元素是否在视窗中完全或部分可见，从而进行曝光统计。
+
+```js
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      trackExposure(entry.target) // 记录曝光数据或触发相应操作
+      observer.unobserve(entry.target) // 停止观察该目标元素
+    }
+  })
+})
+
+const elements = document.querySelectorAll('.exposure-element')
+elements.forEach((element) => {
+  observer.observe(element) // 开始观察每个目标元素
+})
+```
+
+## MutationObserver
+
+`MutationObserver` 接口提供了监视对 DOM 树所做更改的能力.
+
+MutationObserver 构造函数会创建并返回一个新的 MutationObserver 它会在指定的 DOM 发生变化时被调用。
+
+**方法：**
+
+- disconnect():阻止 `MutationObserver` 实例继续接收的通知，直到再次调用其 `observe()` 方法，该观察者对象包含的回调函数都不会再被调用。
+- observe():配置 `MutationObserver` 在 DOM 更改匹配给定选项时，通过其回调函数开始接收通知。
+- takeRecords():从 `MutationObserver` 的通知队列中删除所有待处理的通知，并将它们返回到 `MutationRecord` 对象的新 Array 中。
+
+### MutationObserver 的使用
+
+```js
+// 选择需要观察变动的节点
+const targetNode = document.getElementById('some-id')
+
+// 观察器的配置（需要观察什么变动）
+const config = { attributes: true, childList: true, subtree: true }
+
+// 当观察到变动时执行的回调函数
+const callback = function (mutationsList, observer) {
+  for (let mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      console.log('A child node has been added or removed.')
+    } else if (mutation.type === 'attributes') {
+      console.log('The ' + mutation.attributeName + ' attribute was modified.')
+    }
+  }
+}
+
+// 创建一个观察器实例并传入回调函数
+const observer = new MutationObserver(callback)
+
+// 以上述配置开始观察目标节点
+observer.observe(targetNode, config)
+
+// 之后，可停止观察
+observer.disconnect()
+```
