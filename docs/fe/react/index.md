@@ -113,7 +113,7 @@ export const Deletion = /*              */ 0b0000000001000
 `Renderer` 根据 `Reconciler` 为虚拟 DOM 打的标记，同步执行对应的 DOM 操作。
 
 React16 架构的更新流程：
-[React16 架构更新流程](./images/react-img2.png)
+![React16 架构更新流程](./images/react-img2.png)
 
 其中红框中的步骤随时可能由于以下原因被中断：
 
@@ -121,3 +121,63 @@ React16 架构的更新流程：
 - 当前帧没有剩余时间
 
 由于红框中的工作都在内存中进行，不会更新页面上的 DOM，所以即使反复中断，用户也不会看见更新不完全的 DOM。
+
+## Fiber 架构
+
+在 React 的架构中，我们提到过虚拟 DOM，其实在 React16 之后，它有了一个新的称呼(`Fiber`).在 React15 及其以前，`Reconciler`采用递归的方式创建虚拟 DOM,在递归的过程中不能中断，如果遇到组件树的层级很深，那么递归可能会占用线程的时间导致卡顿，然而这种递归虚拟 DOM 的数据结构不能解决现有问题(将递归重构为异步可中断更新可能会导致页面渲染的结果与预期不一致)。于是，在 React16 之后，产生了 Fiber 架构。
+
+### Fiber 是什么
+
+1. 作为架构来说，之前 React15 的 Reconciler 采用递归的方式执行，数据保存在递归调用栈中，所以被称为 stack Reconciler。React16 的 Reconciler 基于 Fiber 节点实现，被称为 Fiber Reconciler。
+2. 作为静态的数据结构来说，每个 Fiber 节点对应一个 React element，保存了该组件的类型（函数组件/类组件/原生组件...）、对应的 DOM 节点等信息。
+3. 作为动态的工作单元来说，每个 Fiber 节点保存了本次更新中该组件改变的状态、要执行的工作（需要被删除/被插入页面中/被更新...）。
+
+### 双缓存 Fiber 树
+
+在 React 中最多会同时存在两棵 Fiber 树。当前屏幕上显示内容对应的 Fiber 树称为 `current Fiber` 树，正在内存中构建的 Fiber 树称为 `workInProgress Fiber` 树。
+
+`current Fiber` 树中的 Fiber 节点被称为 `current fiber`，`workInProgress Fiber` 树中的 Fiber 节点被称为 `workInProgress fiber`，他们通过 alternate 属性连接。
+
+```js
+currentFiber.alternate === workInProgressFiber
+workInProgressFiber.alternate === currentFiber
+```
+
+当 `workInProgress Fiber` 树构建完成交给 Renderer 渲染在页面上后，应用根节点的 current 指针指向 `workInProgress Fiber` 树，此时 `workInProgress Fiber` 树就变为 `current Fiber` 树。每次状态更新都会产生新的 `workInProgress Fiber` 树，通过 current 与 workInProgress 的替换，完成 DOM 更新。
+
+## React 源码目录结构
+
+在 React16 架构那里已经提到过，React16 的架构分为三层：
+
+- Scheduler（调度器）：调度任务的优先级，高优任务优先进入 Reconciler
+- Reconciler（协调器）: 负责找出变化的组件
+- Renderer（渲染器）:负责将变化的组件渲染到页面上
+
+那么在源码中，这些层次是如何体现的呢，接下来让我们一起来看看。
+
+顶层目录(除去一些配置文件及隐藏文件夹，主要就是一下三个)
+
+```markdown
+根目录
+├── fixtures # 包含一些给贡献者准备的小型 React 测试项目
+├── packages # 包含元数据（比如 package.json）和 React 仓库中所有 package 的源码（子目录 src）
+├── scripts # 各种工具链的脚本，比如 git、jest、eslint 等
+```
+
+React 架构源码在 packages 目录下，我们重点关注 packages
+
+- **react 文件夹**：React 的核心，包含所有全局的 React API。如 **React.createElement**，**React.Component**，**React.Children** 等。
+
+- **scheduler 文件夹**：Scheduler（调度器）的实现。
+
+- **react-reconciler 文件夹**：一边对接 Scheduler，一边对接不同平台的 Renderer，构成了整个 React16 的架构体系。
+
+- **Renderer 相关的文件夹**
+
+```markdown
+- react-art
+- react-dom # 注意这同时是 DOM 和 SSR（服务端渲染）的入口
+- react-native-renderer
+- react-noop-renderer # 用于 debug fiber（后面会介绍 fiber）
+- react-test-renderer
+```
