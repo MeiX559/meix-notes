@@ -1,4 +1,4 @@
-# React 基础知识
+# React 源码基础
 
 ## React 理念
 
@@ -181,3 +181,8 @@ React 架构源码在 packages 目录下，我们重点关注 packages
 - react-noop-renderer # 用于 debug fiber（后面会介绍 fiber）
 - react-test-renderer
 ```
+
+## 参考文档
+
+- [React 技术揭秘](https://react.iamkasong.com/preparation/idea.html)
+- [茂茂物语](https://notes.fe-mm.com/analysis/react/18.2.0/base/idea)

@@ -40,8 +40,9 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       text: 'React',
       collapsed: false,
       items: [
-        { text: 'React基础知识', link: '/fe/react/index' }
-        // { text: '自由拖拽组件实现', link: '/fe/react/drag' }
+        { text: 'React前置知识', link: '/fe/react/pre-konwledge' },
+        { text: 'React源码基础', link: '/fe/react/index' },
+        { text: 'React常见面试题', link: '/fe/react/interview' }
       ]
     },
     {
