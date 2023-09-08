@@ -42,6 +42,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       items: [
         { text: 'React前置知识', link: '/fe/react/pre-konwledge' },
         { text: 'React源码基础', link: '/fe/react/index' },
+        { text: 'React18 源码解析', link: '/fe/react/source' },
         { text: 'React常见面试题', link: '/fe/react/interview' }
       ]
     },
