@@ -187,6 +187,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       link: '/sourceCode/omit'
     },
     {
+      text: 'await-to-js源码阅读',
+      link: '/sourceCode/await'
+    },
+    {
       text: 'axios相关',
       collapsed: false,
       items: [
