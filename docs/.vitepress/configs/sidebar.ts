@@ -191,6 +191,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       link: '/sourceCode/await'
     },
     {
+      text: 'arrify源码阅读',
+      link: '/sourceCode/arrify'
+    },
+    {
       text: 'axios相关',
       collapsed: false,
       items: [
