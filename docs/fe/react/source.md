@@ -4,6 +4,8 @@
 
 ## 初始化阶段
 
+![初始化阶段流程图](./images/react_init1.jpg)
+
 React 的初始化以下面这段代码开始：
 
 ```jsx
@@ -228,6 +230,14 @@ ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render = functio
 
 `updateContainer`
 
+当初始化工作完成之后，我们调用的 render 方法实际上调用的是`ReactDOMRoot.prototype.render`这个原型方法，而这个原型方法会调用`updateContainer`进行更新
+
+流程：
+
+- createUpdate：创建 update 对象
+- enqueueUpdate：将 update 对象添加到更新队列
+- scheduleUpdateOnFiber：调度更新（进入 render 阶段）
+
 ```js
 export function updateContainer(
   element: ReactNodeList,
@@ -272,4 +282,35 @@ export function updateContainer(
 }
 ```
 
-<!-- ## 渲染阶段 -->
+## 渲染(render)阶段
+
+在初始化阶段中，调用了`updateContainer`方法创建 update 对象，并将 update 对象添加到更新队列，接下来会调用`scheduleUpdateOnFiber`进行调度更新(这也是 render 阶段的入口)
+![渲染(render)阶段流程图](./images/react_render1.jpg)
+
+<!-- ### scheduleUpdateOnFiber
+
+### ensureRootIsScheduled
+
+### performSyncWorkOnRoot
+
+### performConcurrentWorkOnRoot
+
+### renderRootSync
+
+### renderRootConcurrent
+
+### workLoopSync
+
+### workLoopConcurrent
+
+### performUnitOfWork
+
+### beginWork
+
+![beginWork流程图](./images/react_render2.jpg)
+
+### completeUnitOfWork
+
+![completeWork流程图](./images/react_render3.jpg)
+
+## commit 阶段 -->
