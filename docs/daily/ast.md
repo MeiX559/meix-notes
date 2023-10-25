@@ -12,6 +12,8 @@
 
 ![AST](./images/ast3.png)
 
+详见[estree](https://github.com/estree/estree/blob/master/es2015.md#programs)
+
 以一段最简单的代码看一下 AST 内部结构到底是怎样的
 
 ```js

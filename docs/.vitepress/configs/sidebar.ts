@@ -61,6 +61,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
       items: [
         { text: 'Prettier', link: '/fe/config/prettier' },
         { text: 'Tailwind CSS 配置项', link: '/fe/config/tailwind' }
+        // { text: 'Webpack', link: '/fe/config/webpack' }
       ]
     },
     {

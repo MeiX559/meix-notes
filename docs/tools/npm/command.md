@@ -1,17 +1,71 @@
 # npm 常用命令相关
 
-## 初始化项目
+## npm init 初始化项目
+
+npm init 也可以直接初始化一个项目，可以直接看[npm init 文档](https://docs.npmjs.com/cli/v6/commands/npm-init)
+
+### npm 用法
 
 ```sh
-# 初始化一个项目
-npm init
+# 使用默认值初始化项目生成一个 package.json 文件
+npm init [--force|-f|--yes|-y|--scope] (example： `npm init --yes` OR `npm init -y`)
 
-# 使用默认值初始化项目
-npm init --yes
-npm init -y
+
+# 使用指定的生成器生成文件
+npm init <@scope> (same as `npx <@scope>/create`)
+npm init [<@scope>/]<name> (same as `npx [<@scope>/]create-<name>`)
+
+# 🌰 使用 create-react-app 初始化项目
+npm init react-app my-app
+# OR
+npm create react-app my-app
 ```
 
-完成以上操作后，将会生成一个 package.json 文件并将其放置在当前目录中。
+`npm init <initializer>`可用于设置新的或现有的 npm 包。
+
+init 命令转化为相应的 npx 操作如下：
+
+- `npm init foo -> npx create-foo`
+- `npm init @usr/foo -> npx @usr/create-foo`
+- `npm init @usr -> npx @usr/create`
+
+```sh
+# 运行
+npm init vue@next
+# 相当于
+npx create-vue@next
+```
+
+### npx
+
+npm 从 5.2 版开始，增加了 npx 命令，具体可以查看[阮一峰 npx 教程](https://www.ruanyifeng.com/blog/2019/02/npx.html)
+
+避免全局安装模块
+
+```sh
+# create-react-app这个模块是全局安装，npx 可以运行它，并且不进行全局安装。
+npx create-react-app my-react-app
+```
+
+使用不同的 node 版本，某些场景下可以临时切换 node 版本，有时比 nvm 包管理方便些。
+
+```sh
+npx node@14 -v
+# v14.18.0
+
+npx -p node@14 node -v
+# v14.18.0
+```
+
+:::warning 注意点
+只要 npx 后面的模块无法在本地发现，就会下载同名模块。比如，本地没有安装 http-server 模块，下面的命令会自动下载该模块，在当前目录启动一个 Web 服务。
+
+```sh
+# 启动本地静态服务
+npx http-server
+```
+
+:::
 
 ## 镜像相关
 
