@@ -12,6 +12,10 @@ export const sourceCode = [
     link: '/sourceCode/arrify'
   },
   {
+    text: 'vite-pretty-lint 源码阅读',
+    link: '/sourceCode/vite-pretty-lint'
+  },
+  {
     text: 'axios相关',
     collapsed: false,
     items: [
