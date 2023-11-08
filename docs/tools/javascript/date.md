@@ -821,8 +821,8 @@ export default CountDown
 </div>
 ```
 
-<!-- <script setup>
+<script setup>
   import CountDown from './countDown.vue'
 </script>
 
-<CountDown /> -->
+<CountDown :timer="890989099" />

@@ -8,6 +8,7 @@ import duration from 'dayjs/plugin/duration'
 dayjs.extend(duration)
 
 const state = reactive({ timer: ['0', '00', '00', '00'], count: null })
+const props = defineProps({ timer: 0 })
 
 const timerRef = ref({ current: null })
 
@@ -41,7 +42,7 @@ const initTimer = (t) => {
 countdown()
 setInterval(countdown, 1000)
 
-initTimer(89098909)
+initTimer(props.timer)
 
 const format = '[<span>]HH[</span>] 时 [<span>]mm[</span>] 分 [<span>]ss[</span>] 秒'
 </script>
@@ -55,13 +56,14 @@ const format = '[<span>]HH[</span>] 时 [<span>]mm[</span>] 分 [<span>]ss[</spa
 
   <div class="countdown">
     使用取值方法：
-    <span>{{ state.count.hours() }}</span>
+    <span className="countdown-num">{{ state.count.hours() }}</span>
     时
-    <span>{{ state.count.minutes() }}</span>
+    <span className="countdown-num">{{ state.count.minutes() }}</span>
     分
-    <span>{{ state.count.seconds() }}</span>
+    <span className="countdown-num">{{ state.count.seconds() }}</span>
     秒
-    <span>{{ state.count.milliseconds() }}</span>
+    <span className="countdown-num">{{ state.count.milliseconds() }}</span>
+    毫秒
   </div>
 
   <div>
@@ -72,3 +74,14 @@ const format = '[<span>]HH[</span>] 时 [<span>]mm[</span>] 分 [<span>]ss[</spa
     >秒
   </div>
 </template>
+
+<style>
+.countdown-num {
+  color: #fff;
+  height: 1.375rem;
+  padding: 0 0.3125rem;
+  background: #9c1be5;
+  border-radius: 0.25rem;
+  margin: 0 0.25rem;
+}
+</style>
