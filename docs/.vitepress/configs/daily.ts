@@ -8,7 +8,8 @@ export const daily = [
       { text: 'Server-Sent Events ', link: '/daily/sse' },
       { text: '浅谈Commonjs和Es Module', link: '/daily/module' },
       { text: 'ArrayBuffer、Blob、File、FileReader', link: '/daily/binary/index' },
-      { text: '抽象语法树 AST', link: '/daily/ast' }
+      { text: '抽象语法树 AST', link: '/daily/ast' },
+      { text: '虚拟列表', link: '/daily/vlist' }
       // { text: '视频播放器库', link: '/daily/video' }
     ]
   },
