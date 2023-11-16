@@ -16,6 +16,10 @@ export const sourceCode = [
     link: '/sourceCode/vite-pretty-lint'
   },
   {
+    text: 'react-window 源码阅读',
+    link: '/sourceCode/react-window'
+  },
+  {
     text: 'axios相关',
     collapsed: false,
     items: [

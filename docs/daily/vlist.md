@@ -268,7 +268,6 @@ const updatePositions = () => {
       newPositions[index].dHeight = dHeight
     }
   })
-
   //  重新计算整体的高度
   const startId = Number(nodes[0].id)
   const positionsLen: any = positions.length
@@ -276,16 +275,13 @@ const updatePositions = () => {
   positions[startId].dHeight = 0
   for (let i = startId + 1; i < positionsLen; ++i) {
     const item = positions[i]
-    positions[i].top = positions[i - 1].bottom
+    positions[i].top = positions[i - 1].bottom // 该item的顶部位置为上一个item的底部位置
     positions[i].bottom = (positions[i].bottom || 0) - startHeight
     if (item.dHeight !== 0) {
       startHeight += item.dHeight || 0
       item.dHeight = 0
     }
   }
-  // 重新计算子列表高度
-  setItemHeight(positions[positionsLen - 1].bottom)
-
   setPositions(newPositions)
 }
 ```
@@ -311,36 +307,17 @@ const onScroll = (e: any) => {
 }
 ```
 
-滚动事件中根据 scrollTop 设置 startIndex 时使用了二分法查找
+获取到了列表的真实高度后，在滚动事件中根据 positions 保存的位置信息 来获取 startIndex，因为 positions 是一个有序数组，所以在搜索时可以利用二分查找来降低时间复杂度。
 
 ```tsx
-// 二分法查找
-const binarySearch = <T, VT>(
-  list: T[],
-  value: VT,
-  compareFunc: (current: T, value: VT) => CompareResult
-) => {
-  let start = 0
-  let end = list.length - 1
-  let tempIndex = null
-
-  while (start <= end) {
-    tempIndex = Math.floor((start + end) / 2)
-    const midValue = list[tempIndex]
-
-    const compareRes: CompareResult = compareFunc(midValue, value)
-    if (compareRes === CompareResult.eq) {
-      return tempIndex
-    }
-
-    if (compareRes === CompareResult.lt) {
-      start = tempIndex + 1
-    } else if (compareRes === CompareResult.gt) {
-      end = tempIndex - 1
+const onScroll = (e: any) => {
+  if (e.target === scrollingContainer.current) {
+    const { scrollTop } = e.target
+    const currentStartIndex: any = getStartIndex(scrollTop)
+    if (currentStartIndex !== originStartIdx) {
+      ...
     }
   }
-
-  return tempIndex
 }
 
 const getStartIndex = (scrollTop = 0) => {
@@ -352,26 +329,51 @@ const getStartIndex = (scrollTop = 0) => {
       if (currentCompareValue === targetValue) {
         return CompareResult.eq
       }
-
       if (currentCompareValue < targetValue) {
         return CompareResult.lt
       }
-
       return CompareResult.gt
     }
   )
   const targetItem: any = positions[idx]
-
-  // Incase of binarySearch give us a not visible data(an idx of current visible - 1)...
+  // 比较bottom和scrollTop，当targetItem.bottom>=scrollTop时，这个元素的就是起始元素
   if (targetItem.bottom < scrollTop) {
     idx += 1
   }
-
   return idx
 }
 ```
 
-不定高虚拟滚动组件完整代码
+### 二分法查找
+
+```tsx
+// 二分法查找
+const binarySearch = <T, VT>(
+  list: T[],
+  value: VT,
+  compareFunc: (current: T, value: VT) => CompareResult
+) => {
+  let start = 0
+  let end = list.length - 1
+  let tempIndex = null
+  while (start <= end) {
+    tempIndex = Math.floor((start + end) / 2)
+    const midValue = list[tempIndex]
+    const compareRes: CompareResult = compareFunc(midValue, value)
+    if (compareRes === CompareResult.eq) {
+      return tempIndex
+    }
+    if (compareRes === CompareResult.lt) {
+      start = tempIndex + 1
+    } else if (compareRes === CompareResult.gt) {
+      end = tempIndex - 1
+    }
+  }
+  return tempIndex
+}
+```
+
+### 不定高虚拟滚动组件完整代码
 
 ```tsx
 import { useEffect, useRef, useState } from 'react'
@@ -405,7 +407,7 @@ const VaribleSizeList =
     const [endIndex, setEndIndex] = useState(0) // 结束索引
     const [positions, setPositions] = useState<positionsType[]>([]) // 位置信息
     const [listHeight, setListHeight] = useState<any>(0) // 列表高度
-    const [itemHeight, setItemHeight] = useState<any>(initItemHeight) // 子列表高度
+    const [itemHeight] = useState<any>(initItemHeight) // 子列表高度
     const [renderCount, setRenderCount] = useState(0) // 一页渲染数量
     const [offsetY, setOffsetY] = useState(0) // 偏移量
 
@@ -475,7 +477,6 @@ const VaribleSizeList =
           newPositions[index].dHeight = dHeight
         }
       })
-
       //  重新计算整体的高度
       const startId = Number(nodes[0].id)
       const positionsLen: any = positions.length
@@ -490,12 +491,9 @@ const VaribleSizeList =
           item.dHeight = 0
         }
       }
-      // 重新计算子列表高度
-      setItemHeight(positions[positionsLen - 1].bottom)
       setPositions(newPositions)
     }
 
-    // 二分查找
     const binarySearch = <T, VT>(
       list: T[],
       value: VT,
@@ -508,19 +506,16 @@ const VaribleSizeList =
       while (start <= end) {
         tempIndex = Math.floor((start + end) / 2)
         const midValue = list[tempIndex]
-
         const compareRes: CompareResult = compareFunc(midValue, value)
         if (compareRes === CompareResult.eq) {
           return tempIndex
         }
-
         if (compareRes === CompareResult.lt) {
           start = tempIndex + 1
         } else if (compareRes === CompareResult.gt) {
           end = tempIndex - 1
         }
       }
-
       return tempIndex
     }
 
@@ -533,21 +528,17 @@ const VaribleSizeList =
           if (currentCompareValue === targetValue) {
             return CompareResult.eq
           }
-
           if (currentCompareValue < targetValue) {
             return CompareResult.lt
           }
-
           return CompareResult.gt
         }
       )
       const targetItem: any = positions[idx]
-
-      // Incase of binarySearch give us a not visible data(an idx of current visible - 1)...
+      // 比较bottom和scrollTop，当targetItem.bottom>=scrollTop时，这个元素的就是起始元素
       if (targetItem.bottom < scrollTop) {
         idx += 1
       }
-
       return idx
     }
 
@@ -591,7 +582,7 @@ const VaribleSizeList =
           style={{ height: listHeight, transform: getTransform() }}
         >
           {renderList.map((item: any, index: number) => (
-            <div key={index}>
+            <div key={index} id={String(item.id)}>
               <Component item={item} />
             </div>
           ))}
