@@ -13,7 +13,7 @@
 
 ## react-window 源码
 
-`react-window` 是 flow 作为类型检查工具，该库类似于 TS。不管是 `FixedSizeList` 还是 `VariableSizeList` 都是在 `createListComponent` 的基础上创建的
+`react-window` 是 [flow](https://flow.org/en/docs/getting-started/) 作为类型检查工具，该库类似于 TS。不管是 `FixedSizeList` 还是 `VariableSizeList` 都是在 `createListComponent` 的基础上创建的
 
 ```tsx createListComponent
 // 定高虚拟列表
@@ -106,7 +106,7 @@ console.log(memoizedAdd(1, 2)) // 输出：3，此次不会重新计算，而是
 
 下面将详细讲解一下这些方法
 
-`render渲染函数`
+#### `render渲染函数`
 
 render 函数根据 startIndex，stopIndex 调用 createElement，创建 dom 结构，并绑定 onScroll 事件
 
@@ -180,37 +180,7 @@ function render() {
 }
 ```
 
-`_getItemStyle`
-
-`_getItemStyle`通过 index 来获取对应 item 的 style, 其中有 height,width, left, top 等具体位置属性, 同时这些属性也有缓存
-
-```tsx
-function _getItemStyle(index) {
-  let style
-  // 有缓存取缓存
-  if (itemStyleCache.hasOwnProperty(index)) {
-    style = itemStyleCache[index]
-  } else {
-    // 根据index计算item的offset
-    const offset = getItemOffset(this.props, index, this._instanceProps)
-    // 根据index计算每个item的itemSize
-    const size = getItemSize(this.props, index, this._instanceProps)
-
-    // 将index的style缓存至itemStyleCache对象中
-    itemStyleCache[index] = style = {
-      position: 'absolute',
-      left: isRtl ? undefined : offsetHorizontal,
-      right: isRtl ? offsetHorizontal : undefined,
-      top: !isHorizontal ? offset : 0,
-      height: !isHorizontal ? size : '100%',
-      width: isHorizontal ? size : '100%'
-    }
-  }
-  return style
-}
-```
-
-`_getRangeToRender`
+#### `_getRangeToRender`
 
 `_getRangeToRender`计算需要渲染的起始和结束索引等数据并返回
 
@@ -242,7 +212,37 @@ function _getRangeToRender() {
 }
 ```
 
-`_onScrollVertical`
+#### `_getItemStyle`
+
+`_getItemStyle`通过 index 来获取对应 item 的 style, 其中有 height,width, left, top 等具体位置属性, 同时这些属性也有缓存
+
+```tsx
+function _getItemStyle(index) {
+  let style
+  // 有缓存取缓存
+  if (itemStyleCache.hasOwnProperty(index)) {
+    style = itemStyleCache[index]
+  } else {
+    // 根据index计算item的offset
+    const offset = getItemOffset(this.props, index, this._instanceProps)
+    // 根据index计算每个item的itemSize
+    const size = getItemSize(this.props, index, this._instanceProps)
+
+    // 将index的style缓存至itemStyleCache对象中
+    itemStyleCache[index] = style = {
+      position: 'absolute',
+      left: isRtl ? undefined : offsetHorizontal,
+      right: isRtl ? offsetHorizontal : undefined,
+      top: !isHorizontal ? offset : 0,
+      height: !isHorizontal ? size : '100%',
+      width: isHorizontal ? size : '100%'
+    }
+  }
+  return style
+}
+```
+
+#### `_onScrollVertical`
 
 `_onScrollVertical`用于监听滚动事件
 
@@ -267,7 +267,7 @@ function _onScrollVertical(event) {
 }
 ```
 
-`_callPropsCallbacks`
+#### `_callPropsCallbacks`
 
 `_callPropsCallbacks`方法用于缓存数据
 
@@ -303,7 +303,7 @@ function _callPropsCallbacks() {
 }
 ```
 
-`scrollToItem`
+#### `scrollToItem`
 
 scrollToItem 方法用于快速滚动至某个 item 的位置上，示例如下：
 
@@ -375,6 +375,13 @@ function scrollToItem(index, align = 'auto') {
   )
 }
 ```
+
+#### `createListComponent` 总结
+
+1. 根据 List 传递的 getStartIndexForOffset、getStopIndexForStartIndex 和 scrollOffset 计算 startIndex、stopIndex
+2. 根据 startIndex、stopIndex 调用 createElement，创建 dom 结构（创建的外部容器 div 绑定 onScroll 事件）
+3. 根据 index 获取每个 item 对应的 style（\_getItemStyle 方法实现的）
+4. onScroll 事件监听滚动，更新滚动信息，根据 scrollOffset 计算得到最新的 startIndex、stopIndex，进而更新视图内容
 
 ### FixedSizeList
 
