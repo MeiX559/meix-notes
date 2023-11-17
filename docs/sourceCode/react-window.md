@@ -13,7 +13,7 @@
 
 ## react-window 源码
 
-`react-window` 是 [flow](https://flow.org/en/docs/getting-started/) 作为类型检查工具，该库类似于 TS。不管是 `FixedSizeList` 还是 `VariableSizeList` 都是在 `createListComponent` 的基础上创建的
+`react-window` 是以 [flow](https://flow.org/en/docs/getting-started/) 作为类型检查工具，该库类似于 TS。不管是 `FixedSizeList` 还是 `VariableSizeList` 都是在 `createListComponent` 的基础上创建的
 
 ```tsx createListComponent
 // 定高虚拟列表
@@ -497,9 +497,39 @@ export default ReactWindow
 
 ### VariableSizeList
 
-`VariableSizeList` 和 `FixedSizeList` 不同的是每个 item 的高度是不定的，因此需要一个数组存储 item 的 offset 和 size
+`VariableSizeList` 和 `FixedSizeList` 不同的是每个 item 的高度是不定的，出于性能考虑，`VariableSizeList`需要一个数组存储 item 的 offset 和 size，在`VariableSizeList`中使用`itemMetadataMap`来存储
 
 ```tsx
+// props初始化
+const initInstanceProps = (props, instance) => {
+  // 预估高度，默认值为50
+  const { estimatedItemSize } = props
+  const instanceProps = {
+    itemMetadataMap: {}, //存储每个item的offset 和 size值
+    estimatedItemSize: estimatedItemSize || DEFAULT_ESTIMATED_ITEM_SIZE,
+    lastMeasuredIndex: -1 //上次记录的索引
+  }
+  // resetAfterIndex方法用于清楚指定index后的所有item的缓存数据，每当itemSize发生变化都会调用
+  // 默认情况下，重置索引后列表会重新渲染
+  instance.resetAfterIndex = (index, shouldForceUpdate = true) => {
+    instanceProps.lastMeasuredIndex = Math.min(instanceProps.lastMeasuredIndex, index - 1)
+    // 清空缓存
+    instance._getItemStyleCache(-1)
+    if (shouldForceUpdate) {
+      instance.forceUpdate()
+    }
+  }
+  return instanceProps
+}
+```
+
+在 `createListComponent` 中已经知道，使用的是 startIndex 和 stopIndex 来创建对应的 dom 结构，另外每个 item 初始时只有一个预估高度，在渲染的时候根据 index 来获取每个 item 对应的 style（包括 height，width，left，top 等值），要获取以上这些信息，就需要计算每个 item 的 offset 以及 itemSize
+
+```tsx
+const getItemOffset = (props, index, instanceProps) => {
+  return getItemMetadata(props, index, instanceProps).offset
+}
+
 // 根据index获取某个item的offset和size
 const getItemMetadata = (props, index, instanceProps) => {
   const { itemSize } = props
@@ -524,7 +554,14 @@ const getItemMetadata = (props, index, instanceProps) => {
 
   return itemMetadataMap[index]
 }
+```
 
+计算列表总的高度 `getEstimatedTotalSize`
+
+```tsx
+// 总的高度=totalSizeOfMeasuredItems+totalSizeOfUnmeasuredItems
+// totalSizeOfMeasuredItems为计算后的，itemMetadataMap[lastMeasuredIndex]的offset加上该item的size
+// totalSizeOfUnmeasuredItems为未计算的item，因此高度采用的是预估高度estimatedItemSize
 const getEstimatedTotalSize = (
   { itemCount },
   { itemMetadataMap, estimatedItemSize, lastMeasuredIndex }
@@ -542,7 +579,94 @@ const getEstimatedTotalSize = (
 
   return totalSizeOfMeasuredItems + totalSizeOfUnmeasuredItems
 }
+```
 
+计算渲染列表的起始索引 `getStartIndexForOffset`
+
+```tsx
+const getStartIndexForOffset = (props, offset, instanceProps) => {
+  return findNearestItem(props, offset, instanceProps)
+}
+
+const findNearestItem = (props, offset, instanceProps) => {
+  const { itemMetadataMap, lastMeasuredIndex } = instanceProps
+  const lastMeasuredItemOffset =
+    lastMeasuredIndex > 0 ? itemMetadataMap[lastMeasuredIndex].offset : 0
+  if (lastMeasuredItemOffset >= offset) {
+    // 如果已经计算过这个item的offset，则使用二分法查找
+    return findNearestItemBinarySearch(props, instanceProps, lastMeasuredIndex, 0, offset)
+  } else {
+    // 如果没有测量到这么高的值，则使用指数搜索和内部二分法搜索
+    return findNearestItemExponentialSearch(
+      props,
+      instanceProps,
+      Math.max(0, lastMeasuredIndex),
+      offset
+    )
+  }
+}
+
+// 二分法搜索
+const findNearestItemBinarySearch = (props, instanceProps, high, low, offset) => {
+  while (low <= high) {
+    const middle = low + Math.floor((high - low) / 2)
+    const currentOffset = getItemMetadata(props, middle, instanceProps).offset
+    if (currentOffset === offset) {
+      return middle
+    } else if (currentOffset < offset) {
+      low = middle + 1
+    } else if (currentOffset > offset) {
+      high = middle - 1
+    }
+  }
+  if (low > 0) {
+    return low - 1
+  } else {
+    return 0
+  }
+}
+
+// 指数搜索
+const findNearestItemExponentialSearch = (props, instanceProps, index, offset) => {
+  const { itemCount } = props
+  let interval = 1
+  while (index < itemCount && getItemMetadata(props, index, instanceProps).offset < offset) {
+    index += interval
+    interval *= 2
+  }
+  return findNearestItemBinarySearch(
+    props,
+    instanceProps,
+    Math.min(index, itemCount - 1),
+    Math.floor(index / 2),
+    offset
+  )
+}
+```
+
+计算结束索引 `getStopIndexForStartIndex`
+
+```tsx
+const getStopIndexForStartIndex = (props, startIndex, scrollOffset, instanceProps) => {
+  const { direction, height, itemCount, layout, width } = props
+  const isHorizontal = direction === 'horizontal' || layout === 'horizontal'
+  const size = isHorizontal ? width : height
+  const itemMetadata = getItemMetadata(props, startIndex, instanceProps)
+  const maxOffset = scrollOffset + size
+
+  let offset = itemMetadata.offset + itemMetadata.size
+  let stopIndex = startIndex
+
+  while (stopIndex < itemCount - 1 && offset < maxOffset) {
+    stopIndex++
+    offset += getItemMetadata(props, stopIndex, instanceProps).size
+  }
+
+  return stopIndex
+}
+```
+
+```tsx
 const VariableSizeList = createListComponent({
   // 计算每个item的offset
   getItemOffset: (props, index, instanceProps) =>
@@ -598,39 +722,12 @@ const VariableSizeList = createListComponent({
     findNearestItem(props, offset, instanceProps),
   // 计算渲染列表的结束索引
   getStopIndexForStartIndex: (props, startIndex, scrollOffset, instanceProps) => {
-    const { direction, height, itemCount, layout, width } = props
-    const isHorizontal = direction === 'horizontal' || layout === 'horizontal'
-    const itemMetadata = getItemMetadata(props, startIndex, instanceProps)
-    const maxOffset = scrollOffset + size
-
-    let offset = itemMetadata.offset + itemMetadata.size
-    let stopIndex = startIndex
-
-    while (stopIndex < itemCount - 1 && offset < maxOffset) {
-      stopIndex++
-      offset += getItemMetadata(props, stopIndex, instanceProps).size
-    }
-
+    // ...省略
     return stopIndex
   },
   // props初始化
   initInstanceProps: (props, instance) => {
-    // 预估高度，默认值为50
-    const { estimatedItemSize } = props
-    const instanceProps = {
-      itemMetadataMap: {},
-      estimatedItemSize: estimatedItemSize || DEFAULT_ESTIMATED_ITEM_SIZE,
-      lastMeasuredIndex: -1
-    }
-    instance.resetAfterIndex = (index, shouldForceUpdate = true) => {
-      instanceProps.lastMeasuredIndex = Math.min(instanceProps.lastMeasuredIndex, index - 1)
-      // 清空缓存
-      instance._getItemStyleCache(-1)
-      if (shouldForceUpdate) {
-        instance.forceUpdate()
-      }
-    }
-
+    // ...省略
     return instanceProps
   }
 })
