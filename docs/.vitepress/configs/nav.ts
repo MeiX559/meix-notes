@@ -28,6 +28,10 @@ export const nav = [
     link: '/sourceCode/dom-to-image'
   },
   {
+    text: '面试相关',
+    link: '/interview/css/index'
+  },
+  {
     text: '个人主页',
     link: '/about/'
   }
