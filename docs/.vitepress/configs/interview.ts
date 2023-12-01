@@ -1,9 +1,9 @@
 export const interview = [
-  {
-    text: 'HTML相关',
-    collapsed: false,
-    items: [{ text: 'HTML', link: '/interview/html/index' }]
-  },
+  // {
+  //   text: 'HTML相关',
+  //   collapsed: false,
+  //   items: [{ text: 'HTML', link: '/interview/html/index' }]
+  // },
   {
     text: 'CSS相关',
     collapsed: false,
