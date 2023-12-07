@@ -1,7 +1,11 @@
-import { defineConfig } from 'vitepress'
-
+import { defineConfig, PageData } from 'vitepress'
+import { createWriteStream } from 'node:fs'
+import { resolve } from 'node:path'
+import { SitemapStream } from 'sitemap'
 import { sidebar } from './configs/sidebar'
 import { nav } from './configs/nav'
+
+const links: { url: string; lastmod: PageData['lastUpdated'] }[] = []
 
 export default defineConfig({
   outDir: '../dist',
@@ -9,7 +13,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: 'meixiu',
   description: 'meixiu 的成长之路',
-
+  lastUpdated: true,
   /* 主题配置 */
   themeConfig: {
     i18nRouting: false,
@@ -25,7 +29,7 @@ export default defineConfig({
 
     footer: {
       message: '如有转载或 CV 的请标注本站原文地址',
-      copyright: 'Copyright © 2023 meixiu'
+      copyright: 'Copyright © 2023-present  <a href="https://github.com/MeiX559">meixiu</a>'
     },
     darkModeSwitchLabel: '外观',
     returnToTopLabel: '返回顶部',
@@ -35,4 +39,20 @@ export default defineConfig({
       next: '下一篇'
     }
   }
+  /* 生成站点地图 */
+  // transformHtml: (_, id, { pageData }) => {
+  //   if (!/[\\/]404\.html$/.test(id))
+  //     links.push({
+  //       url: pageData.relativePath.replace(/((^|\/)index)?\.md$/, '$2'),
+  //       lastmod: pageData.lastUpdated
+  //     })
+  // },
+  // buildEnd: async ({ outDir }) => {
+  //   const sitemap = new SitemapStream({ hostname: 'https://meix.netlify.app/' })
+  //   const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
+  //   sitemap.pipe(writeStream)
+  //   links.forEach((link) => sitemap.write(link))
+  //   sitemap.end()
+  //   await new Promise((r) => writeStream.on('finish', r))
+  // }
 })

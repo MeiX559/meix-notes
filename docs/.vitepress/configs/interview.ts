@@ -8,9 +8,10 @@ export const interview = [
     text: 'CSS相关',
     collapsed: false,
     items: [{ text: 'CSS', link: '/interview/css/index' }]
+  },
+  {
+    text: 'JS相关',
+    collapsed: false,
+    items: [{ text: 'JS', link: '/interview/js/index' }]
   }
-  // {
-  //   text: 'JS',
-  //   link: '/interview/js/index'
-  // }
 ]
