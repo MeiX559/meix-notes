@@ -11,6 +11,6 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
   '/pit/': pit, //踩坑记录
   '/daily/': daily, //日常记录
   '/tools/': tools, //常用工具/方法
-  '/sourceCode': sourceCode, //源码
-  '/interview': interview //面试相关
+  '/sourceCode/': sourceCode, //源码
+  '/interview/': interview //面试相关
 }

@@ -29,7 +29,7 @@ export const nav = [
   },
   {
     text: '面试相关',
-    link: '/interview/css/index'
+    link: '/interview/css'
   },
   {
     text: '个人主页',

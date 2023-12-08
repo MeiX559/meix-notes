@@ -1,17 +1,15 @@
 export const interview = [
-  // {
-  //   text: 'HTML相关',
-  //   collapsed: false,
-  //   items: [{ text: 'HTML', link: '/interview/html/index' }]
-  // },
   {
-    text: 'CSS相关',
+    text: '前端三剑客相关',
     collapsed: false,
-    items: [{ text: 'CSS', link: '/interview/css/index' }]
+    items: [
+      { text: 'HTML', link: '/interview/html' },
+      { text: 'CSS相关', link: '/interview/css' },
+      { text: 'JS相关', link: '/interview/js' }
+    ]
   },
   {
-    text: 'JS相关',
-    collapsed: false,
-    items: [{ text: 'JS', link: '/interview/js/index' }]
+    text: '算法相关',
+    link: '/interview/algorithm'
   }
 ]
