@@ -25,15 +25,16 @@ export const daily = [
     text: '桌面应用开发',
     link: '/daily/electron/index'
   },
-  // {
-  //   text: '打包编译相关',
-  //   collapsed: false,
-  //   items: [
-  //     { text: 'Vite', link: '/daily/pack/vite' },
-  //     { text: 'Webpack', link: '/daily/pack/webpack' },
-  //     { text: 'Rollup', link: '/daily/pack/rollup' }
-  //   ]
-  // },
+  {
+    text: '打包编译相关',
+    collapsed: false,
+    items: [
+      // { text: 'Vite', link: '/daily/pack/vite' },
+      // { text: 'Webpack', link: '/daily/pack/webpack' },
+      // { text: 'Rollup', link: '/daily/pack/rollup' }
+      { text: 'Rspack', link: '/daily/pack/rspack' }
+    ]
+  },
   {
     text: 'canvas 相关',
     collapsed: false,
