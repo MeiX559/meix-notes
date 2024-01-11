@@ -277,6 +277,14 @@ export default class FxBuildPlugin {
 }
 ```
 
+### 编写 webpack 插件调试方法
+
+```sh
+# 在package.json文件的scripts添加下面这条启动命令
+node --inspect-brk ./node_modules/@rspack/cli/bin/rspack
+# 在浏览器打开这个链接：chrome://inspect，点击最下面的inspect链接按钮，即可跳转到对应的调试界面
+```
+
 ## webpack 迁移到 Rspack
 
 由于业务项目使用的大部分应用是依赖于 Create React App（简称 CRA）构建的，而 CRA 本身内置了很多的工程能力，手动从`@rspack/cli`搭建出一个对等能力的配置并非易事，而 Rspack 提供了一种方法，通过将 CRA 应用迁移到 Rsbuild 来使用 Rspack 的能力。

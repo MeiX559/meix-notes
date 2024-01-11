@@ -150,11 +150,63 @@ a:active {
 
 ### 关于居中
 
-1. 利用 margin:0 auto 实现水平居中（宽高固定）
-2. 利用绝对定位+margin:auto 居中（宽高固定）
-3. 利用绝对定位+top:50%，left:50%+margin 负值
-4. 利用绝对定位+top:50%，left:50%+translate(-50%,-50%)
-5. flex 布局+align-items:center + justify-content:center
+1. 行内元素可以使用利用 text-align: center 和 line-height 设置 height 一样实现，块级元素设置 margin:0 auto 实现水平居中（宽高固定）
+2. 父元素使用 display:flex;justify-content: center; align-items: center;，子元素即可实现水平垂直居中
+3. 使用 transform 属性（元素宽高不定），利用绝对定位+top:50%，left:50%+translate(-50%,-50%)
+4. 利用绝对定位+margin:auto 居中（宽高固定）
+5. 利用绝对定位+top:50%，left:50%+margin 负值
+
+- 行内元素
+
+```css
+.parent {
+  /* 水平居中 */
+  text-align: center;
+  /* 垂直居中 */
+  height: 40px;
+  line-height: 40px;
+}
+```
+
+- 块级元素，设置 margin:0 auto 即可水平居中(宽度固定)
+- 父元素使用 display:flex;justify-content: center; align-items: center;，子元素即可实现水平垂直居中
+- 使用 transform 属性（元素宽高不定）
+
+```css
+.son {
+  position: absolute;
+  /* 水平居中 */
+  left: 50%;
+  transform: translate(-50%, 0);
+  /* 垂直居中 */
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+```
+
+- 使用绝对定位，以及负值的 margin-left（元素固定宽高）
+
+缺点：父元素空间不够时，子元素可能不可见
+
+```css
+.son{
+position:absolute;
+/* 水平居中 */
+width:固定;
+left:50%;
+margin-left:-0.5 宽度;
+/* 垂直居中 */
+height:固定
+top:50%;
+margin-top:-0.5 高度
+/* 或者使用以下方法实现水平垂直居中_ */
+left:0;
+right:0;
+top:0;
+bottom:0;
+margin:auto;
+}
+```
 
 ### display 有哪些值？说明他们的作用
 
@@ -240,6 +292,69 @@ flex 布局是 CSS3 新增的一种布局方式，可以通过将一个元素的
 ```
 
 ### CSS 多列等高如何实现？
+
+左右等高布局：父元素设置 align-items: stretch;
+
+```html
+<div class="box">
+  <div class="left">left</div>
+  <div class="right">right</div>
+</div>
+```
+
+```css
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+.left {
+  text-align: center;
+  width: 100px;
+  height: 100px;
+  background-color: antiquewhite;
+}
+.right {
+  flex: 1; /* 不设置高度时，该元素的高度适应左边高度*/
+  text-align: center;
+  background-color: aliceblue;
+}
+```
+
+### css 设置内容为一行时水平居中，多行是居左显示
+
+```html
+<style>
+  div {
+    text-align: center;
+    span {
+      display: inline-block;
+      text-align: left;
+    }
+  }
+</style>
+<script>
+  <div>
+    <span
+      >我是多行文字。我是多行文字。我是多行文字。我是多行文字。我是多行文字。我是多行文
+      字。我是多行文字。我是多行文字。我是多行文字。我是多行文字。</span
+    >
+  </div>
+  <div><span>我是一行文字</span></div>
+</script>
+```
+
+### 使用 CSS 如何实现一个最大的正方形
+
+用 padding-bottom 撑开边距
+
+```css
+.box {
+  width: 100%;
+  padding-bottom: 100%;
+  background: #333;
+}
+```
 
 ### 经常遇到的浏览器的兼容性有哪些？原因，解决方法是什么？
 

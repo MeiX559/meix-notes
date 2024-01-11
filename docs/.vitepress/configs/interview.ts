@@ -11,5 +11,9 @@ export const interview = [
   {
     text: '算法相关',
     link: '/interview/algorithm'
+  },
+  {
+    text: 'Webpack相关',
+    link: '/interview/webpack'
   }
 ]
