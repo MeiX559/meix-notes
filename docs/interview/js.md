@@ -222,3 +222,21 @@ doFoo.call(obj, obj.foo);
 ### new 绑定
 
 ### ES6 新增箭头函数绑定
+
+## `if (a == '1' && a == '2' && a == '3')`在什么时候可以为 true
+
+```js
+var a = {
+  value: 1,
+  toString: function () {
+    return this.value++
+  }
+}
+// a为一个对象，重定义了toString方法，再进行a == '1'比较的时候，首先会进行类型转换，即将a转换为字符串
+
+if (a == '1' && a == '2' && a == '3') {
+  console.log('a的值为：', a) //a的值为：{value:4,toString:f}
+}
+```
+
+[具体可看对象转换为字符串的转换规则](https://meix.netlify.app/fe/javascript/conversions/#%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AD%97%E7%AC%A6%E4%B8%B2)
