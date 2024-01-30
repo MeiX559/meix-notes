@@ -1,5 +1,9 @@
 # Webpack 相关
 
+## Webpack 思维导图
+
+![Webpack 思维导图](./images/webpackXmind.png)
+
 ## Webpack 基础
 
 webpack 是一个用于现代 JavaScript 应用程序的静态模块打包工具。我们可以使用 webpack 管理模块。因为在 webpack 看来，项目中的所有资源皆为模块，通过分析模块间的依赖关系，在其内部构建出一个依赖图，最终编绎输出模块为 HTML、JavaScript、CSS 以及各种静态文件（图片、字体等），让我们的开发过程更加高效。
@@ -222,3 +226,37 @@ export default class MyBuildPlugin {
   }
 }
 ```
+
+## Webpack 构建流程
+
+1. 初始化阶段
+
+- 解析命令行与`webpack.config.js`配置的参数，合并生成最后的配置
+- 开始编译（创建 compiler 对象并开始启动插件，确定入口文件等，开始执行构建）
+
+2. 构建阶段
+
+- 读取文件内容
+- 调用 loader 将模块转译为标准的 JS 内容
+- 生成 AST 语法树
+- 分析 AST 抽象语法树确定模块依赖列表
+- 解析模块依赖，生成最终完成的模块依赖关系图
+
+3. 生成阶段
+
+- 遍历模块依赖图并执行操作
+- 合并模块代码与运行时代码生成 chunk
+- 执行产物优化操作（Tree-sharking，代码压缩，Code Split）
+- 输出结果（根据配置文件确定输出的路径以及文件名，将文件内容写入到文件系统）
+
+## webpack 热更新原理（HMR）
+
+Webpack 的热更新又称为热替换，缩写为 HMR，它可以做到不刷新浏览器而将新变更的模块替换旧模块。
+
+热更新流程步骤：
+
+1. Webpack 的热更新其实是启动了一个 webpack-dev-server 服务托管静态资源
+2. 浏览器加载页面后会与 webpack-dev-server 建立 WebSocket 连接
+3. 本地资源发生变化的时候，此时 Webpack 会监听到文件的变化，从而 WebSocket 会向浏览器推送更新（增量构建发生变更的模块，并通过 WebSocket 发送 hash 事件）。
+4. 浏览器将与上一次的资源进行对比，对比出差异后会向 WebSocket 发起请求获取发生变更的模块，进行增量更新
+5. 触发变更模块的回调将最新的代码替换到运行环境中
