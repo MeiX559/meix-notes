@@ -9,6 +9,7 @@ const links: { url: string; lastmod: PageData['lastUpdated'] }[] = []
 
 export default defineConfig({
   outDir: '../dist',
+  head: [['link', { rel: 'icon', href: '/logo.png' }]],
 
   lang: 'zh-CN',
   title: 'meixiu',
