@@ -28,6 +28,10 @@ export default defineConfig({
     },
     socialLinks: [{ icon: 'github', link: 'https://github.com/MeiX559' }],
 
+    editLink: {
+      pattern: 'https://github.com/MeiX559',
+      text: '在 GitHub 上编辑此页面'
+    },
     footer: {
       message: '如有转载或 CV 的请标注本站原文地址',
       copyright: 'Copyright © 2023-present  <a href="https://github.com/MeiX559">meixiu</a>'
