@@ -34,7 +34,7 @@ export default defineConfig({
     },
     footer: {
       message: '如有转载或 CV 的请标注本站原文地址',
-      copyright: 'Copyright © 2023-present  <a href="https://github.com/MeiX559">meixiu</a>'
+      copyright: `Copyright © 2023-${new Date().getFullYear()}  <a href="https://github.com/MeiX559">meixiu</a>`
     },
     darkModeSwitchLabel: '外观',
     returnToTopLabel: '返回顶部',

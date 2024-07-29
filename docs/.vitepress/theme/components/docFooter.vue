@@ -7,6 +7,7 @@ const { theme, page, site } = useData()
 const hasSidebar = computed(() => {
   return site.value.themeConfig.sidebar !== false
 })
+console.log(hasSidebar.value)
 
 const isDocFooterVisible = computed(() => {
   const { footer = {} } = theme.value
@@ -25,7 +26,7 @@ const lastUpdatedDate = computed(() => {
 <template>
   <div v-if="isDocFooterVisible" v-show="hasSidebar" class="sh-doc-footer">
     <p class="sh-doc-footer-copyright" v-if="theme.footer?.copyright">
-      版权所有 © 2023-{{ new Date().getFullYear() }} meixiu
+      Copyright © 2023-{{ new Date().getFullYear() }} meixiu
     </p>
     <p v-if="lastUpdatedDate">
       {{ lastUpdatedText }}：{{ new Date(lastUpdatedDate).toLocaleString() }}
