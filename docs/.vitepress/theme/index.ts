@@ -28,6 +28,8 @@ export default {
     })
   },
   enhanceApp({ app, router }: EnhanceAppContext) {
-    createMediumZoomProvider(app, router)
+    if (typeof window !== 'undefined') {
+      createMediumZoomProvider(app, router)
+    }
   }
 }
