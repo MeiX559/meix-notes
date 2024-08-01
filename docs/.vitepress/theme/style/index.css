@@ -1,3 +1,9 @@
 .VPDocFooter .last-updated {
   display: none;
 }
+.medium-zoom-overlay {
+  z-index: 30;
+}
+.medium-zoom-image--opened {
+  z-index: 30;
+}

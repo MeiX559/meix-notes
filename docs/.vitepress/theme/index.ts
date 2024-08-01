@@ -1,7 +1,8 @@
 import { h } from 'vue'
-import { useData } from 'vitepress'
+import { EnhanceAppContext, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import DocFooter from './components/docFooter.vue'
+import { createMediumZoomProvider } from './hooks/useMediumZoom'
 
 import './style/index.css'
 
@@ -25,5 +26,8 @@ export default {
        */
       'doc-after': () => h(DocFooter)
     })
+  },
+  enhanceApp({ app, router }: EnhanceAppContext) {
+    createMediumZoomProvider(app, router)
   }
 }
